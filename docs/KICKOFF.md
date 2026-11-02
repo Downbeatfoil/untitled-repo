@@ -5,7 +5,6 @@
 - [ ] Both laptops: `gh auth login` done (agents post to the board with `gh`)
 - [ ] Vercel project linked to the repo, `XAI_API_KEY` set in Vercel env vars
 - [ ] Board PR open and pinned, its number in `board/PR_NUMBER`
-- [ ] Fill in HUMAN_A / HUMAN_B GitHub usernames in `AGENTS.md`
 
 ## 0:00–0:15: Lock the idea (humans + Claude)
 1. Paste the theme, tracks, and prizes to Claude.
@@ -15,8 +14,8 @@
 ## 0:15–0:20: Fire the swarm
 For each lane, open a new Cursor agent and paste `prompts/agents/<lane>.md` with the `{{…}}` filled in
 (Claude posts filled versions on the board). Suggested split:
-- **HUMAN_A:** pages, components, integrations
-- **HUMAN_B:** api, ai, data
+- **@Downbeatfoil:** pages, components, integrations
+- **@vibhorguptagt:** api, ai, data
 - Optional extra agents: a second components agent (different files), or a "polish" agent on pages later on
 
 ## 0:20–1:30: Build

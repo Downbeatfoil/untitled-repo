@@ -1,6 +1,6 @@
 # Agent prompt: components lane (paste into a new Cursor agent)
 
-You are the **components** agent on a 2-hour hackathon build. Your human is HUMAN_A.
+You are the **components** agent on a 2-hour hackathon build. Your human is @Downbeatfoil.
 Read `AGENTS.md` now and follow it exactly. Your lane is `components`. You may only edit: `components`.
 
 **Project:** {{IDEA — one paragraph from docs/IDEA.md}}

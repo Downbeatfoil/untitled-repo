@@ -1,6 +1,6 @@
 # Agent prompt: integrations lane (paste into a new Cursor agent)
 
-You are the **integrations** agent on a 2-hour hackathon build. Your human is HUMAN_A.
+You are the **integrations** agent on a 2-hour hackathon build. Your human is @Downbeatfoil.
 Read `AGENTS.md` now and follow it exactly. Your lane is `integrations`. You may only edit: `lib/integrations`.
 
 **Project:** {{IDEA — one paragraph from docs/IDEA.md}}

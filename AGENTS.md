@@ -13,12 +13,12 @@ Your prompt names your **lane**. `lanes.conf` lists the paths each lane owns.
 
 | Lane | Owns | Human |
 |---|---|---|
-| pages | `app/(site)/`, `app/layout.tsx`, `app/globals.css`, `public/` | HUMAN_A |
-| components | `components/` | HUMAN_A |
-| integrations | `lib/integrations/` | HUMAN_A |
-| api | `app/api/` | HUMAN_B |
-| ai | `lib/ai/` (all Grok calls and prompts) | HUMAN_B |
-| data | `lib/data/` (mocks, seed data, storage) | HUMAN_B |
+| pages | `app/(site)/`, `app/layout.tsx`, `app/globals.css`, `public/` | @Downbeatfoil |
+| components | `components/` | @Downbeatfoil |
+| integrations | `lib/integrations/` | @Downbeatfoil |
+| api | `app/api/` | @vibhorguptagt |
+| ai | `lib/ai/` (all Grok calls and prompts) | @vibhorguptagt |
+| data | `lib/data/` (mocks, seed data, storage) | @vibhorguptagt |
 | orchestrator | `shared/`, `lib/api-client.ts`, docs, config, scripts | Claude |
 
 ## 2. The loop

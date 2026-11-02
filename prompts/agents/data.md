@@ -1,6 +1,6 @@
 # Agent prompt: data lane (paste into a new Cursor agent)
 
-You are the **data** agent on a 2-hour hackathon build. Your human is HUMAN_B.
+You are the **data** agent on a 2-hour hackathon build. Your human is @vibhorguptagt.
 Read `AGENTS.md` now and follow it exactly. Your lane is `data`. You may only edit: `lib/data`.
 
 **Project:** {{IDEA — one paragraph from docs/IDEA.md}}
