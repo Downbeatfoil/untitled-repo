@@ -11,17 +11,20 @@ cd "$(git rev-parse --show-toplevel)"
 PR=$(tr -d '[:space:]' < board/PR_NUMBER)
 [ "$PR" = "TBD" ] && { echo "Board PR not set yet: put the PR number in board/PR_NUMBER" >&2; exit 1; }
 
-fmt='"---\n" + .author.login + " · " + .createdAt + "\n" + .body'
+fmt='"---\n" + .user.login + " · " + .created_at + "\n" + .body'
+# REST only (works everywhere, incl. cloud sessions). Newest 100 repo comments, filtered to the board.
+recent() { gh api "repos/{owner}/{repo}/issues/comments?sort=created&direction=desc&per_page=100" --jq "$1"; }
+onboard='select(.issue_url | endswith("/issues/'"$PR"'"))'
 
 case "${1:-read}" in
-  read) gh pr view "$PR" --json comments --jq ".comments[-${2:-15}:][] | $fmt" ;;
+  read) recent "[.[] | $onboard][:${2:-15}] | reverse | .[] | $fmt" ;;
   mine) lane="${2:?lane}"
-        gh pr view "$PR" --json comments --jq "[.comments[] | select(.body | test(\"TO:[^\\n]*\\\\b(${lane}|all)\\\\b\"))][-10:][] | $fmt" ;;
+        recent "[.[] | $onboard | select(.body | test(\"TO:[^\\n]*\\\\b(${lane}|all)\\\\b\"))][:10] | reverse | .[] | $fmt" ;;
   post)
     lane="${2:?lane}"; type="${3:?TYPE}"; msg="${4:?message}"; to="${5:-}"; humans="${6:-}"
     body="**[$lane] $type** — $msg"
     [ -n "$to" ] && body+=$'\n'"TO: $to"
     [ -n "$humans" ] && body+=$'\n'"$humans"
-    gh pr comment "$PR" --body "$body" >/dev/null && echo "posted: $body" ;;
+    gh api "repos/{owner}/{repo}/issues/$PR/comments" -f body="$body" --silent && echo "posted: $body" ;;
   *) sed -n '2,9p' "$0"; exit 1 ;;
 esac
