@@ -1,0 +1,9 @@
+---
+description: Multi-agent swarm rules — lanes, board, shipping
+alwaysApply: true
+---
+@AGENTS.md
+
+Non-negotiable: only edit files inside your lane (see lanes.conf). Read the board before starting
+(`scripts/board.sh mine <lane>`), post START/DONE/BLOCKED with `scripts/board.sh post`, and commit only with
+`scripts/ship.sh <lane> "msg"`, never with raw `git add .` or `git commit -a`.
