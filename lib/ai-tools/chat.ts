@@ -5,14 +5,52 @@
 import type { ChatMessage, ChatResponse, CoursePack } from "@/shared/contract";
 import { askGrokJson, grokConfigured } from "@/lib/ai/grok";
 import { mockChat } from "@/lib/data";
-import { GROK_VOICE, packDigest, str, withTimeout } from "./_util";
+import { GROK_VOICE, diffOf, freqOf, packDigest, str, withTimeout } from "./_util";
 
 function lastUser(messages: ChatMessage[]): string {
   for (let i = (messages?.length ?? 0) - 1; i >= 0; i--) if (messages[i]?.role === "user") return str(messages[i].content);
   return "";
 }
 
+const STOP = new Set(["the","and","for","are","what","how","why","about","does","with","this","that","exam","test","hard","difficult","tell","explain","class","course","which","when","will","from","your","can","you","any","have","there","into"]);
+const tokens = (t: string) => t.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2 && !STOP.has(w));
+
+/** Keyword-grounded answer from the pack itself (no Grok); null if no concept matches. */
+function packAnswer(pack: CoursePack, question: string): ChatResponse | null {
+  const q = new Set(tokens(question));
+  const scored = pack.concepts
+    .map((c) => {
+      const words = new Set([...tokens(c.label), ...tokens(c.id), ...tokens(c.description)]);
+      const labelHits = tokens(c.label + " " + c.id).filter((w) => q.has(w)).length;
+      const descHits = [...words].filter((w) => q.has(w)).length;
+      return { c, score: labelHits * 3 + descHits };
+    })
+    .sort((a, b) => b.score - a.score);
+  const best = scored[0];
+  if (!best || best.score < 3) return null;
+  const c = best.c;
+  const freq = Math.round(freqOf(pack, c.id) * 100);
+  const diff = Math.round(diffOf(pack, c.id) * 100);
+  const ev = pack.examTopics.find((t) => t.conceptId === c.id)?.evidenceSourceIds ?? [];
+  const quote = pack.difficulty.find((d) => d.conceptId === c.id)?.quotes?.[0];
+  const cited = [...new Set([...ev, ...(quote ? [quote.sourceId] : [])])].filter((id) => pack.sources.some((s) => s.id === id)).slice(0, 3);
+  const cw = new Set(tokens(c.label + " " + c.id));
+  const tip = pack.tips.find((t) => tokens(t).some((w) => cw.has(w)));
+  const reply =
+    `${c.label} in ${pack.course.code}: ${c.description} ` +
+    `It shows up on about ${freq}% of past exams and students rate it ${diff}/100 for difficulty.` +
+    (quote ? ` One student put it this way: "${quote.text}"` : "") +
+    (tip ? ` My move: ${tip}` : "");
+  return { reply, citedSourceIds: cited, mocked: true };
+}
+
 function safeMock(pack: CoursePack, question: string): ChatResponse {
+  try {
+    const own = packAnswer(pack, question);
+    if (own) return own;
+  } catch {
+    /* fall through to data mock */
+  }
   try {
     return mockChat(pack, question);
   } catch {
