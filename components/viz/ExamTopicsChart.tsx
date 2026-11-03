@@ -61,7 +61,7 @@ export default function ExamTopicsChart({ pack, examTopics: et, concepts: cs, di
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={rows} layout="vertical" margin={{ top: 4, right: 44, bottom: 4, left: 4 }} barCategoryGap={8}>
           <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} stroke={PALETTE.slate} tick={{ fill: PALETTE.slate, fontSize: 11 }} axisLine={false} tickLine={false} />
-          <YAxis type="category" dataKey="label" width={130} stroke={PALETTE.text} tick={{ fill: PALETTE.text, fontSize: 12 }} axisLine={false} tickLine={false} interval={0} />
+          <YAxis type="category" dataKey="label" width={176} stroke={PALETTE.text} tick={{ fill: PALETTE.text, fontSize: 11.5 }} tickFormatter={(v: string) => (v.length > 30 ? v.slice(0, 29) + "…" : v)} axisLine={false} tickLine={false} interval={0} />
           <Tooltip
             cursor={{ fill: "rgba(148,163,184,0.08)" }}
             contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8, color: "#e2e8f0", fontSize: 12 }}
