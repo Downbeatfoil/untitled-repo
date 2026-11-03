@@ -11,4 +11,4 @@
 - [x] P1 `lib/ai/chat.ts`: `courseChat(pack, messages)` grounded in pack + sources, returns cited source ids.
 - [x] P1 `lib/ai/prompts.ts`: put EVERY system prompt here; make Grok's voice witty but useful (it's Grok).
 - [x] P2 Timeouts: each research agent max 25 s (AbortController); on timeout, emit agent error + continue with what you have.
-- [ ] P2 Quality loop: run scout for CS 1332 live (if key), compare with seed, tighten prompts until output looks great.
+- [x] P2 Quality loop: run scout for CS 1332 live (if key), compare with seed, tighten prompts until output looks great.
