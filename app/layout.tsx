@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Nav from "./(site)/_components/Nav";
 import Footer from "./(site)/_components/Footer";
+import { ToastProvider } from "@/components/core/Toast";
+import CommandK from "@/components/core/CommandK";
 
 export const metadata: Metadata = {
   title: { default: "SmartPath Scout — name any GT class", template: "%s · SmartPath Scout" },
@@ -21,9 +23,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className="dark">
       <body className="antialiased">
-        <Nav />
-        <div className="min-h-[calc(100vh-4rem)]">{children}</div>
-        <Footer />
+        <ToastProvider>
+          <Nav />
+          <div className="min-h-[calc(100vh-4rem)]">{children}</div>
+          <Footer />
+          <CommandK />
+        </ToastProvider>
       </body>
     </html>
   );

@@ -5,7 +5,9 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import type { CoursePack } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
-import { ConceptGraph, ExamTopicsChart, FearGauge } from "@/components/viz";
+import { ConceptGraph, DifficultyHeatmap, ExamTopicsChart, FearGauge, SourceKindDonut } from "@/components/viz";
+import GrokStatusPill from "@/components/core/GrokStatusPill";
+import ShareCard from "@/components/core/ShareCard";
 import CourseChat from "@/components/core/CourseChat";
 import ExportButton from "@/components/core/ExportButton";
 import OutreachComposer from "@/components/core/OutreachComposer";
@@ -15,7 +17,6 @@ import SourceList from "@/components/core/SourceList";
 import StudyPlanner from "@/components/core/StudyPlanner";
 import TipList from "@/components/core/TipList";
 import { ErrorBox, Skeleton } from "../../_components/ui";
-import { DifficultyHeatmap } from "../../_components/viz";
 import { loadPack } from "../../_lib/data";
 
 const TABS = ["Overview", "Practice Exam", "Study Plan", "Professor Outreach", "Ask the Course"] as const;
@@ -64,7 +65,7 @@ export default function CoursePage() {
         <div className="grid-bg pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-2"><span className="eyebrow">Georgia Tech</span>{pack.mocked && <span className="badge border-line2 text-dim">seeded pack</span>}</div>
+            <div className="flex items-center gap-2"><span className="eyebrow">Georgia Tech</span><GrokStatusPill pack={pack} /></div>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl"><span className="mono text-gradient">{pack.course.code}</span></h1>
             <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">{pack.course.title}</div>
             <p className="mt-3 text-[15px] leading-relaxed text-muted">{pack.summary}</p>
@@ -96,6 +97,10 @@ export default function CoursePage() {
                 </Section>
               </div>
               <Section title="Difficulty heatmap" sub="Hardest concepts first"><DifficultyHeatmap pack={pack} /></Section>
+              <div className="grid gap-6 lg:grid-cols-2">
+                <Section title="Where the intel came from" sub="Source mix across agents"><SourceKindDonut pack={pack} /></Section>
+                <ShareCard pack={pack} />
+              </div>
               <div className="grid gap-6 lg:grid-cols-2">
                 <TipList tips={pack.tips} />
                 <SourceList sources={pack.sources} />

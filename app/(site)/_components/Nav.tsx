@@ -21,6 +21,9 @@ export function Logo({ size = 28 }: { size?: number }) {
 
 const LINKS = [
   { href: "/", label: "Courses", match: (p: string) => p === "/" || p.startsWith("/course") || p.startsWith("/scout") },
+  { href: "/roast", label: "Roast", match: (p: string) => p.startsWith("/roast") },
+  { href: "/versus", label: "Versus", match: (p: string) => p.startsWith("/versus") },
+  { href: "/wall", label: "Wall", match: (p: string) => p.startsWith("/wall") },
   { href: "/built-by-agents", label: "Built by Agents", match: (p: string) => p.startsWith("/built-by-agents") },
   { href: "/about", label: "About", match: (p: string) => p.startsWith("/about") },
 ];
@@ -46,7 +49,7 @@ export default function Nav() {
                 href={l.href}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   active ? "bg-[rgba(179,163,105,0.12)] text-goldb" : "text-muted hover:text-foreground"
-                } ${l.href === "/about" ? "hidden sm:block" : ""}`}
+                } ${["/about", "/roast", "/versus", "/wall"].includes(l.href) ? "hidden md:block" : ""}`}
               >
                 {l.label}
               </Link>
