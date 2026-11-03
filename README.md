@@ -1,7 +1,3 @@
-# Project Name
-
-> One-line pitch.
-
 ## Run it
 ```bash
 npm install
