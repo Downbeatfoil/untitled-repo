@@ -23,7 +23,7 @@ export function survivalLabel(odds: number): string {
 }
 
 const CX = 150, CY = 150, R = 112;
-const START = 135, SWEEP = 270; // degrees; dial opens at the bottom
+const START = 225, SWEEP = 270; // degrees clockwise from 12 o’clock; the gap sits at the bottom
 const pt = (deg: number, r = R) => {
   const a = ((deg - 90) * Math.PI) / 180;
   return [CX + r * Math.cos(a), CY + r * Math.sin(a)] as const;
@@ -88,8 +88,8 @@ export default function RoastMeter({ odds, label, caption = "Survival odds", siz
         <line x1={CX} y1={CY} x2={nx} y2={ny} stroke="#f1f5f9" strokeWidth={4} strokeLinecap="round" />
         <circle cx={CX} cy={CY} r={11} fill="#0b1020" stroke="#f1f5f9" strokeWidth={4} />
         <text x={CX} y={CY + 62} textAnchor="middle" fontSize={50} fontWeight={900} fill={col} style={{ fontVariantNumeric: "tabular-nums" }}>{Math.round(shown)}<tspan fontSize={24} dx={2}>%</tspan></text>
-        <text x={CX - 66} y={CY + 100} textAnchor="middle" fontSize={11} fill="#64748b">doomed</text>
-        <text x={CX + 66} y={CY + 100} textAnchor="middle" fontSize={11} fill="#64748b">thriving</text>
+        <text x={CX - 79} y={CY + 104} textAnchor="middle" fontSize={11} fill="#64748b">doomed</text>
+        <text x={CX + 79} y={CY + 104} textAnchor="middle" fontSize={11} fill="#64748b">thriving</text>
       </svg>
       <div className="-mt-3 text-center">
         <div className="text-2xl font-extrabold tracking-wide" style={{ color: col }}>{verdict}</div>
