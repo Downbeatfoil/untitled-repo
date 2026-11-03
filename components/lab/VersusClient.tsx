@@ -79,6 +79,14 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
   const [finished, setFinished] = useState(false);
   const stage = useRef<HTMLDivElement>(null);
 
+  // Deep link: /versus?a=CS%201332&b=CS%202110 prefills both fighters.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const ca = normalizeCourseCode(q.get("a") ?? ""), cb = normalizeCourseCode(q.get("b") ?? "");
+    if (CODE_RE.test(ca)) setA(ca);
+    if (CODE_RE.test(cb)) setB(cb);
+  }, []);
+
   const same = a === b && !!a;
   const ready = !!a && !!b && !same;
 

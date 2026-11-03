@@ -1,6 +1,6 @@
 "use client";
 /** Lane: lab. Schedule Roast: pick 3–5 courses → survival odds, verdict, one roast per course, plan links. */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { CourseSummary } from "@/shared/contract";
 import { courseSlug, normalizeCourseCode } from "@/shared/contract";
@@ -29,6 +29,12 @@ export default function RoastClient({ courses }: { courses: CourseSummary[] }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<RoastResult | null>(null);
   const resRef = useRef<HTMLDivElement>(null);
+  // Deep link: /roast?c=CS%201332,MATH%201554 prefills the schedule.
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).getAll("c").flatMap((v) => v.split(","));
+    const codes = [...new Set(raw.map(normalizeCourseCode).filter((c) => CODE_RE.test(c)))].slice(0, MAX);
+    if (codes.length) setPicked(codes);
+  }, []);
   const byCode = useMemo(() => new Map(courses.map((c) => [c.code, c])), [courses]);
 
   const add = (raw: string) => {
