@@ -9,3 +9,10 @@ All components are `"use client"`, take contract types as props, and look great 
 - [x] P1 `ScoreRadar.tsx`: radar of practice-exam score per concept.
 - [x] P2 `AgentSwarmViz.tsx`: animated SVG of 4 agent nodes orbiting a course node, pulses when a source arrives (for the scout page hero).
 - [x] P2 `BoardActivityChart.tsx`: posts/commits per lane bars for /built-by-agents.
+
+## Orchestrator round 2
+- [x] P0 `LearningPath.tsx` {pack, targetConceptId}: highlight the prereq chain on the ConceptGraph, numbered steps ("Path to mastering AVL Trees").
+- [x] P1 `GTConstellation.tsx` {courses: CourseSummary[]}: star map, size = fearScore, click = /course/[slug] (home hero background).
+- [x] P1 `SemesterHeat.tsx` {packs}: stacked fear bars for a whole schedule (lab /roast).
+- [x] P1 `BattleBars.tsx` {a,b}: animated health bars for lab /versus.
+- [x] P1 `SourceTimeline.tsx` {sources}: sources popping in over time for the scout page.

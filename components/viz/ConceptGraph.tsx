@@ -32,6 +32,10 @@ export interface ConceptGraphProps {
   sources?: Source[];
   /** Height in px of the graph canvas. Default 520. */
   height?: number;
+  /** Highlight a subset (e.g. a prereq chain): everything else is dimmed, edges inside the set animate. */
+  highlightIds?: string[];
+  /** Optional numbered badges (1-based study order) shown on nodes. */
+  stepNumbers?: Record<string, number>;
   /** Fired when a node is selected (null on deselect). */
   onSelectConcept?: (conceptId: string | null) => void;
   className?: string;
@@ -44,6 +48,8 @@ type ConceptNodeData = {
   freq: number;
   selected: boolean;
   dim: boolean;
+  hl: boolean;
+  step?: number;
 };
 type CNode = Node<ConceptNodeData, "concept">;
 
@@ -51,7 +57,7 @@ const LEVEL_GAP = 270;
 const ROW_GAP = 40;
 
 function ConceptNode({ data }: NodeProps<CNode>) {
-  const { size, color, label, freq, selected, dim } = data;
+  const { size, color, label, freq, selected, dim, hl, step } = data;
   return (
     <div className="flex flex-col items-center" style={{ width: 150, opacity: dim ? 0.3 : 1, transition: "opacity .2s" }}>
       <div className="relative" style={{ width: size, height: size }}>
@@ -61,12 +67,15 @@ function ConceptNode({ data }: NodeProps<CNode>) {
           className="flex h-full w-full items-center justify-center rounded-full text-[11px] font-bold text-slate-900 transition-transform hover:scale-110"
           style={{
             background: `radial-gradient(circle at 30% 28%, rgba(255,255,255,.55), ${color} 55%)`,
-            boxShadow: selected ? `0 0 0 3px #e2e8f0, 0 0 26px ${color}` : `0 0 16px -2px ${color}`,
+            boxShadow: selected ? `0 0 0 3px #e2e8f0, 0 0 26px ${color}` : hl ? `0 0 0 3px #818cf8, 0 0 22px ${color}` : `0 0 16px -2px ${color}`,
             cursor: "pointer",
           }}
         >
           {freq > 0 ? pct(freq) : ""}
         </div>
+        {step !== undefined && (
+          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-slate-950 bg-indigo-500 text-[11px] font-extrabold text-white shadow-lg">{step}</div>
+        )}
       </div>
       <div className="mt-1.5 text-center text-xs font-semibold leading-tight text-slate-100" style={{ textShadow: "0 1px 4px #020617" }}>
         {label}
@@ -124,6 +133,8 @@ export default function ConceptGraph({
   difficulty: difficultyProp,
   sources: sourcesProp,
   height = 520,
+  highlightIds,
+  stepNumbers,
   onSelectConcept,
   className = "",
 }: ConceptGraphProps) {
@@ -139,7 +150,9 @@ export default function ConceptGraph({
   const srcById = useMemo(() => new Map(sources.map((s) => [s.id, s])), [sources]);
   const byId = useMemo(() => new Map(concepts.map((c) => [c.id, c])), [concepts]);
 
+  const hlSet = useMemo(() => (highlightIds && highlightIds.length ? new Set(highlightIds) : null), [highlightIds]);
   const neighbors = useMemo(() => {
+    if (hlSet) return hlSet;
     if (!selectedId) return null;
     const set = new Set<string>([selectedId]);
     edges.forEach((e) => {
@@ -147,7 +160,7 @@ export default function ConceptGraph({
       if (e.to === selectedId) set.add(e.from);
     });
     return set;
-  }, [selectedId, edges]);
+  }, [selectedId, edges, hlSet]);
 
   const { nodes, flowEdges } = useMemo(() => {
     const { cols } = layout(concepts, edges);
@@ -172,6 +185,8 @@ export default function ConceptGraph({
             freq: freq.get(id)?.frequency ?? 0,
             selected: id === selectedId,
             dim: !!neighbors && !neighbors.has(id),
+            hl: !!hlSet && hlSet.has(id),
+            step: stepNumbers?.[id],
           },
           draggable: true,
         });
@@ -183,7 +198,7 @@ export default function ConceptGraph({
       .filter((e) => ids.has(e.from) && ids.has(e.to))
       .map((e, i) => {
         const prereq = e.relation === "prereq";
-        const active = !neighbors || (neighbors.has(e.from) && neighbors.has(e.to) && (e.from === selectedId || e.to === selectedId));
+        const active = hlSet ? hlSet.has(e.from) && hlSet.has(e.to) : !neighbors || (neighbors.has(e.from) && neighbors.has(e.to) && (e.from === selectedId || e.to === selectedId));
         const stroke = prereq ? "#818cf8" : "#64748b";
         return {
           id: `e${i}-${e.from}-${e.to}`,
@@ -195,7 +210,7 @@ export default function ConceptGraph({
         } satisfies Edge;
       });
     return { nodes: out, flowEdges: fe };
-  }, [concepts, edges, freq, diff, byId, selectedId, neighbors]);
+  }, [concepts, edges, freq, diff, byId, selectedId, neighbors, hlSet, stepNumbers]);
 
   const select = useCallback(
     (id: string | null) => {
