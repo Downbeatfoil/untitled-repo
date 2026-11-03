@@ -85,7 +85,7 @@ export function mockRoast(packs: CoursePack[]): RoastResult {
   let verdict = "A balanced semester. You might even maintain a social life.";
 
   if (avgFear > 75 || count >= 5) {
-    verdict = "Academic suicide pact. Your caffeine budget will exceed your tuition this semester.";
+    verdict = "Academic hostage situation. Your caffeine budget will exceed your tuition this semester.";
     survivalOdds = Math.min(22, survivalOdds);
   } else if (avgFear > 65) {
     verdict = "Severe emotional turbulence ahead. Say goodbye to weekends between weeks 6 and 12.";

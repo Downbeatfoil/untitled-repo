@@ -93,7 +93,7 @@ const CURATED_QUESTIONS: Record<string, Question[]> = {
       conceptId: "hashing",
       type: "mcq",
       prompt: "In a hash table with capacity 11 using quadratic probing with index formula (hash + i^2) % 11, what is the probe index for i = 3 if hash = 5?",
-      choices: ["3", "5", "8", "3"],
+      choices: ["1", "3", "5", "8"],
       answer: "3",
       explanation: "(5 + 3^2) % 11 = (5 + 9) % 11 = 14 % 11 = 3.",
       difficulty: "medium",
