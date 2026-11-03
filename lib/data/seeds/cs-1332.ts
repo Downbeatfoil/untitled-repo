@@ -110,6 +110,30 @@ export const cs1332Sources: Source[] = [
     snippet: "Canvas-based visual animations of 2-4 tree splits, AVL balancing, and KMP prefix alignments used in recitation.",
     foundBy: "concept-mapper",
   },
+  {
+    id: "s14",
+    url: "https://gatech.instructure.com/courses/cs1332-recitation-guides",
+    title: "CS 1332 Recitation Handouts: Step-by-Step Tree Balancing & Heaps",
+    kind: "practice",
+    snippet: "Official recitation walkthroughs on AVL rotation mechanics, 2-4 tree overflow splits, and BuildHeap pointer operations.",
+    foundBy: "syllabus-scout",
+  },
+  {
+    id: "s15",
+    url: "https://x.com/gt_whispers/status/1728000000000000000",
+    title: "GT Student Post on X: Hash Table Probing Pitfalls",
+    kind: "x",
+    snippet: "'Never forget the DEL marker when removing from a probing hash map, or your lookups will terminate prematurely.'",
+    foundBy: "student-pulse",
+  },
+  {
+    id: "s16",
+    url: "https://github.com/gt-cs1332-archive/final-exam-review",
+    title: "CS 1332 Comprehensive Final Exam Review Sheet & Graph Guide",
+    kind: "exam",
+    snippet: "Curated GT student review consolidating all 14 data structures, worst-case runtime bounds, and MST edge cases.",
+    foundBy: "exam-hunter",
+  },
 ];
 
 export const cs1332Pack: CoursePack = {

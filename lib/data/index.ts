@@ -22,3 +22,6 @@ export { cs4641Pack } from "./seeds/cs-4641";
 export { math2551Pack } from "./seeds/math-2551";
 export { ece2020Pack } from "./seeds/ece-2020";
 export { chem1310Pack } from "./seeds/chem-1310";
+export { cs2050Pack } from "./seeds/cs-2050";
+export { phys2212Pack } from "./seeds/phys-2212";
+export { econ2100Pack } from "./seeds/econ-2100";

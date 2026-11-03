@@ -242,25 +242,43 @@ export function mockPlan(pack: CoursePack, examDate: string, hoursPerDay: number
 export function mockOutreach(
   pack: CoursePack,
   professor?: Professor | string,
-  studentName = "Georgia Tech Student"
+  studentName = "Georgia Tech Student",
+  tone: "formal" | "friendly" = "friendly"
 ): OutreachDraft {
   const profName = typeof professor === "string" ? professor : professor?.name ?? pack.professors[0]?.name ?? "Professor";
   const profEmail = typeof professor === "object" && professor?.email ? professor.email : pack.professors[0]?.email ?? "";
 
-  const subject = `Inquiry regarding ${pack.course.code} practice resources for SmartPath`;
-  const body = `Dear ${profName},
+  const subject = tone === "formal"
+    ? `Inquiry: Supplemental Practice Material for ${pack.course.code}`
+    : `Quick question about ${pack.course.code} study resources`;
 
-I hope your semester is going well!
+  const body = tone === "formal"
+    ? `Dear ${profName},
 
-I am currently preparing for ${pack.course.code} (${pack.course.title}) and using SmartPath Scout—a Georgia Tech student study tool that turns public syllabus topics and past exams into interactive concept maps and practice sets.
+I hope this email finds you well.
 
-Our team noticed that public past exam archives are among the highest-impact resources for helping students bridge difficult concepts like ${pack.concepts[0]?.label ?? "core data structures"}. Would you consider sharing or recommending any past midterm practice questions or study guides that we could integrate to benefit GT students?
+My name is ${studentName}, and I am currently studying ${pack.course.code} (${pack.course.title}) at Georgia Tech. In collaboration with SmartPath Scout—a student academic tool built at Tech—we are creating interactive concept graphs and study guides aligned with public syllabi.
 
-Thank you for your time, dedication, and support of the GT student community!
+We would be deeply grateful if you could share or recommend any publicly releasable practice exams, recitation worksheets, or study materials that could be indexed to support GT students in mastering ${pack.concepts[0]?.label ?? "core coursework"}.
 
-Sincerely,
+Thank you very much for your leadership and guidance.
+
+Respectfully,
 ${studentName}
-Georgia Tech College of Computing`;
+Georgia Tech College of Computing`
+    : `Hi ${profName},
+
+Hope your semester is going great!
+
+I'm ${studentName}, currently taking ${pack.course.code} (${pack.course.title}). Our student group is working on SmartPath Scout, turning public course topics and past exams into interactive concept maps and practice quizzes for GT students.
+
+Do you have any past exam recommendations or public practice sets you'd suggest we index to help students prep for midterms?
+
+Thanks so much for your time!
+
+Best,
+${studentName}
+Georgia Tech Student`;
 
   const mailto = `mailto:${encodeURIComponent(profEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 

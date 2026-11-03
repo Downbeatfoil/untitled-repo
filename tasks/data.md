@@ -12,3 +12,6 @@
 - [x] P1 6 additional seeds for star map + roast: CS 2340, CS 2200, CS 4641, MATH 2551, ECE 2020, CHEM 1310.
 - [x] P1 `lib/data/roast.ts`: `mockRoast(packs)` and `mockVersus(a,b)` matching ai-tools types with 2-3 witty lines per course.
 - [x] P1 `lib/data/boardFallback.ts`: realistic static BoardStats for fallback when GitHub API is unreachable.
+- [x] P1 Demo quality pass on CS 1332 + MATH 1554 (15+ sources, richest quotes, sharp tips, verified edges).
+- [x] P1 3 more judge favorites: CS 2050, PHYS 2212, ECON 2100 (15 total seeds across CS, MATH, PHYS, ECE, CHEM, ECON).
+- [x] P1 mockOutreach 4-arg signature with tone support (`formal` | `friendly`).

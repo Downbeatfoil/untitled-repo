@@ -1,6 +1,6 @@
 /**
  * Lane: data
- * Core pack registry and seed lookup helpers (12 GT seeded courses).
+ * Core pack registry and seed lookup helpers (15 GT seeded courses).
  */
 import type { CourseCode, CoursePack, CourseSummary } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
@@ -16,6 +16,9 @@ import { cs4641Pack } from "./seeds/cs-4641";
 import { math2551Pack } from "./seeds/math-2551";
 import { ece2020Pack } from "./seeds/ece-2020";
 import { chem1310Pack } from "./seeds/chem-1310";
+import { cs2050Pack } from "./seeds/cs-2050";
+import { phys2212Pack } from "./seeds/phys-2212";
+import { econ2100Pack } from "./seeds/econ-2100";
 
 const SEEDS: Record<CourseCode, CoursePack> = {
   "CS 1332": cs1332Pack,
@@ -30,6 +33,9 @@ const SEEDS: Record<CourseCode, CoursePack> = {
   "MATH 2551": math2551Pack,
   "ECE 2020": ece2020Pack,
   "CHEM 1310": chem1310Pack,
+  "CS 2050": cs2050Pack,
+  "PHYS 2212": phys2212Pack,
+  "ECON 2100": econ2100Pack,
 };
 
 /** Look up a seeded CoursePack by course code (case/space-insensitive). */
