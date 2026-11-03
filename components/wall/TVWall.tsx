@@ -11,13 +11,23 @@ import BoardTicker from "./BoardTicker";
 import SwarmCounter from "./SwarmCounter";
 import QRPanel from "./QRPanel";
 import type { WallCourse } from "./types";
+import { RoastSlide, VersusSlide, useLabSlides } from "./LabSlides";
+
 import { useBoard, useNow, useViewportHeight } from "./useBoard";
 
 const ROTATE_MS = 12_000;
 const TICK_MS = 100;
 
 export default function TVWall({ courses }: { courses: WallCourse[] }) {
-  const list = courses.length ? courses : [];
+  const lab = useLabSlides(courses);
+  type Slide = { kind: "course"; course: WallCourse; n: number } | { kind: "roast" } | { kind: "versus" };
+  const list: Slide[] = [];
+  courses.forEach((course, i) => {
+    list.push({ kind: "course", course, n: i + 1 });
+    if (i === 2 && lab.roster.length) list.push({ kind: "roast" });
+    if (i === 5 && lab.versus) list.push({ kind: "versus" });
+  });
+  if (courses.length > 0 && courses.length <= 2 && lab.roster.length) list.push({ kind: "roast" });
   const { feed, live } = useBoard();
   const now = useNow(30_000);
   const vh = useViewportHeight();
@@ -59,7 +69,8 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [go, fullscreen]);
 
-  const c = list[idx];
+  const slide = list[idx];
+  const c = slide?.kind === "course" ? slide.course : null;
   const clock = now ? new Date(now).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
 
   return (
@@ -89,10 +100,14 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
         <div className="flex min-h-0 flex-col gap-4">
           <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-panel/70 p-5 lg:p-6">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-24 opacity-15" style={{ background: "linear-gradient(180deg, rgba(61,139,255,.35), transparent)", animation: "wl-scan 7s linear infinite" }} />
-            {c ? (
+            {slide?.kind === "roast" ? (
+              <RoastSlide key="roast" roster={lab.roster} roast={lab.roast} />
+            ) : slide?.kind === "versus" && lab.versus ? (
+              <VersusSlide key="versus" v={lab.versus} />
+            ) : c && slide?.kind === "course" ? (
               <div key={c.code} className="relative grid min-h-0 flex-1 gap-5 overflow-hidden xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]" style={{ animation: "wl-in .7s ease-out" }}>
                 <div className="flex min-w-0 flex-col">
-                  <div className="text-xs font-bold uppercase tracking-[0.35em] text-gold">Most feared · {idx + 1} of {list.length}</div>
+                  <div className="text-xs font-bold uppercase tracking-[0.35em] text-gold">Most feared · {slide.n} of {courses.length}</div>
                   <h1 className="mt-2 text-[clamp(2.2rem,min(5.5vw,9vh),6rem)] font-black leading-none tracking-tight text-goldb">{c.code}</h1>
                   <div className="mt-2 text-[clamp(1rem,min(2vw,3.4vh),2rem)] font-semibold text-foreground/90">{c.title}</div>
                   <p className="mt-2 line-clamp-2 max-w-xl text-[clamp(.85rem,1.1vw,1.15rem)] leading-snug text-muted">{c.summary}</p>
@@ -148,7 +163,7 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
             <div className="relative mt-4 flex items-center gap-3">
               <div className="flex gap-1.5">
                 {list.map((x, i) => (
-                  <button key={x.code} onClick={() => { setIdx(i); setElapsed(0); }} aria-label={x.code} className={`h-2 rounded-full transition-all ${i === idx ? "w-8 bg-goldb" : "w-2 bg-line2 hover:bg-muted"}`} />
+                  <button key={i} onClick={() => { setIdx(i); setElapsed(0); }} aria-label={x.kind === "course" ? x.course.code : x.kind} className={`h-2 rounded-full transition-all ${i === idx ? "w-8 bg-goldb" : "w-2 bg-line2 hover:bg-muted"}`} />
                 ))}
               </div>
               <div className="h-1 flex-1 overflow-hidden rounded-full bg-line">
