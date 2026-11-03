@@ -106,6 +106,14 @@ export default function ScoutProgress({ courseCode, fresh, onComplete, onError, 
         </div>
       </div>
 
+      <p className="sr-only" role="status" aria-live="polite">
+        {pack
+          ? `Course pack ready for ${courseCode}`
+          : AGENTS.filter((a) => agents[a.name].status !== "queued")
+              .map((a) => `${a.label} ${agents[a.name].status}`)
+              .join(". ")}
+      </p>
+
       {error && !pack && (
         <div role="alert" className="flex items-center justify-between gap-3 rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-200">
           <span>Scout hit a snag: {error}</span>

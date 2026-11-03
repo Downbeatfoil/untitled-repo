@@ -7,4 +7,4 @@
 - [x] P1 `CourseChat.tsx`: chat with `postChat`, suggested questions ("What's on exam 2?"), cited sources as chips.
 - [x] P1 `Tabs.tsx`, `Skeleton.tsx`, `Badge.tsx`, `Button.tsx`, `ExportButton.tsx` (downloads `exportUrl(code,'smartpath')`).
 - [x] P2 `QuoteCard.tsx`, `TipList.tsx`, `SourceList.tsx` (grouped by kind).
-- [ ] P2 Keyboard + focus states, `aria-live` on scout feed.
+- [x] P2 Keyboard + focus states, `aria-live` on scout feed.
