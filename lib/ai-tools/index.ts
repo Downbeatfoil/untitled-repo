@@ -4,3 +4,5 @@ export { roastSchedule } from "./roast";
 export type { RoastResult } from "./roast";
 export { generatePlan } from "./plan";
 export { courseChat } from "./chat";
+export { draftOutreach } from "./outreach";
+export type { OutreachTone } from "./outreach";
