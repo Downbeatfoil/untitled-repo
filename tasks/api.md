@@ -1,7 +1,7 @@
 # api lane — `app/api/`  (thin routes: validate with zod, call lib/ai + lib/data, return contract shapes)
 - [ ] P0 `POST /api/scout` → SSE (`text/event-stream`, `data: <json>\n\n`) streaming `runScout` from lib/ai (until ai lane delivers, stream `replayScout(getSeedPack)` from lib/data). Set `export const dynamic = "force-dynamic"`, `runtime = "nodejs"`, `maxDuration = 60`. Cache the final pack via lib/data cache.
-- [ ] P0 `GET /api/courses` → `CourseSummary[]` (seeds + cached live packs).
-- [ ] P0 `GET /api/packs/[code]` → `CoursePack` (cache → seed → generic; slug "cs-1332" or code).
+- [x] P0 `GET /api/courses` → `CourseSummary[]` (seeds + cached live packs).
+- [x] P0 `GET /api/packs/[code]` → `CoursePack` (cache → seed → generic; slug "cs-1332" or code).
 - [ ] P0 `POST /api/exam` and `POST /api/exam/grade`.
 - [ ] P1 `POST /api/plan`, `POST /api/outreach`, `POST /api/chat`.
 - [ ] P1 `GET /api/export/[code]?format=smartpath|ics` using lib/export (Content-Disposition attachment; ics needs examDate & hoursPerDay).
