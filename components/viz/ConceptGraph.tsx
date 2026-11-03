@@ -18,12 +18,14 @@ import {
   type Node,
   type NodeProps,
 } from "@xyflow/react";
-import type { Concept, ConceptEdge, Difficulty, ExamTopic, Source } from "@/shared/contract";
+import type { Concept, ConceptEdge, CoursePack, Difficulty, ExamTopic, Source } from "@/shared/contract";
 import { difficultyColor, difficultyLabel, pct } from "./colors";
 
 export interface ConceptGraphProps {
-  concepts: Concept[];
-  edges: ConceptEdge[];
+  /** Convenience: pass the whole CoursePack instead of the individual arrays. */
+  pack?: CoursePack;
+  concepts?: Concept[];
+  edges?: ConceptEdge[];
   examTopics?: ExamTopic[];
   difficulty?: Difficulty[];
   /** Optional: lets the side panel show source titles for quotes/evidence. */
@@ -73,6 +75,11 @@ function ConceptNode({ data }: NodeProps<CNode>) {
   );
 }
 const nodeTypes = { concept: ConceptNode };
+const EMPTY_CONCEPTS: Concept[] = [];
+const EMPTY_EDGES: ConceptEdge[] = [];
+const EMPTY_TOPICS: ExamTopic[] = [];
+const EMPTY_DIFF: Difficulty[] = [];
+const EMPTY_SOURCES: Source[] = [];
 
 /** Longest-path layering over prereq edges (cycle-safe), then barycenter ordering. */
 function layout(concepts: Concept[], edges: ConceptEdge[]) {
@@ -110,15 +117,21 @@ function layout(concepts: Concept[], edges: ConceptEdge[]) {
 }
 
 export default function ConceptGraph({
-  concepts,
-  edges,
-  examTopics = [],
-  difficulty = [],
-  sources = [],
+  pack,
+  concepts: conceptsProp,
+  edges: edgesProp,
+  examTopics: examTopicsProp,
+  difficulty: difficultyProp,
+  sources: sourcesProp,
   height = 520,
   onSelectConcept,
   className = "",
 }: ConceptGraphProps) {
+  const concepts = conceptsProp ?? pack?.concepts ?? EMPTY_CONCEPTS;
+  const edges = edgesProp ?? pack?.edges ?? EMPTY_EDGES;
+  const examTopics = examTopicsProp ?? pack?.examTopics ?? EMPTY_TOPICS;
+  const difficulty = difficultyProp ?? pack?.difficulty ?? EMPTY_DIFF;
+  const sources = sourcesProp ?? pack?.sources ?? EMPTY_SOURCES;
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const freq = useMemo(() => new Map(examTopics.map((t) => [t.conceptId, t])), [examTopics]);

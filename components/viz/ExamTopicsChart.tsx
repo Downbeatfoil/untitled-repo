@@ -2,18 +2,23 @@
 /** Lane: viz. Horizontal bar chart of exam-topic frequency ("What's on the exam"). */
 import { useMemo } from "react";
 import { Bar, BarChart, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import type { Concept, Difficulty, ExamTopic } from "@/shared/contract";
+import type { Concept, CoursePack, Difficulty, ExamTopic } from "@/shared/contract";
 import { difficultyColor, PALETTE } from "./colors";
 
 export interface ExamTopicsChartProps {
-  examTopics: ExamTopic[];
-  concepts: Concept[];
+  /** Convenience: pass the whole CoursePack instead of the individual arrays. */
+  pack?: CoursePack;
+  examTopics?: ExamTopic[];
+  concepts?: Concept[];
   /** Optional: color bars by difficulty (otherwise indigo gradient by frequency). */
   difficulty?: Difficulty[];
   /** Max bars to show. Default 10. */
   limit?: number;
   className?: string;
 }
+
+const NONE_T: ExamTopic[] = [];
+const NONE_C: Concept[] = [];
 
 interface Row {
   id: string;
@@ -23,7 +28,10 @@ interface Row {
   sources: number;
 }
 
-export default function ExamTopicsChart({ examTopics, concepts, difficulty, limit = 10, className = "" }: ExamTopicsChartProps) {
+export default function ExamTopicsChart({ pack, examTopics: et, concepts: cs, difficulty: df, limit = 10, className = "" }: ExamTopicsChartProps) {
+  const examTopics = et ?? pack?.examTopics ?? NONE_T;
+  const concepts = cs ?? pack?.concepts ?? NONE_C;
+  const difficulty = df ?? pack?.difficulty;
   const rows = useMemo<Row[]>(() => {
     const labels = new Map(concepts.map((c) => [c.id, c.label]));
     const diff = new Map((difficulty ?? []).map((d) => [d.conceptId, d.score]));
