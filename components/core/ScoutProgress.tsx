@@ -100,7 +100,7 @@ export default function ScoutProgress({ courseCode, fresh, onComplete, onError, 
           className="h-2 overflow-hidden rounded-full bg-white/10"
         >
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#B3A369] to-[#2D7DFF] transition-all duration-700"
+            className="h-full rounded-full bg-[#B3A369] transition-all duration-700"
             style={{ width: `${Math.min(100, Math.max(4, pct))}%` }}
           />
         </div>
@@ -136,7 +136,7 @@ export default function ScoutProgress({ courseCode, fresh, onComplete, onError, 
 
       {pack && (
         <div className="sp-fly-in rounded-2xl border border-[#B3A369]/50 bg-[#B3A369]/10 p-5 text-center" role="status">
-          <p className="text-xl font-bold text-[#D9CD9A]">✨ Course pack ready</p>
+          <p className="text-xl font-bold text-[#D9CD9A]">Course pack ready</p>
           <p className="mt-1 text-sm text-neutral-300">
             {pack.concepts.length} concepts · {pack.sources.length} sources{pack.mocked ? " · demo data" : ""}
           </p>

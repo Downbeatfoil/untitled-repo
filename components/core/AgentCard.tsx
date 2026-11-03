@@ -61,7 +61,7 @@ export default function AgentCard({ agent, status = "queued", message }: AgentCa
           : "border-white/10";
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-4 transition-colors duration-500 ${border} ${active ? "shadow-[0_0_32px_-12px_#2D7DFF]" : ""} ${status === "queued" ? "opacity-70" : ""}`}
+      className={`relative overflow-hidden rounded-[10px] border bg-[#131417] p-4 transition-colors duration-500 ${border} ${active ? "" : ""} ${status === "queued" ? "opacity-70" : ""}`}
       data-agent={agent}
       data-status={status}
     >

@@ -111,7 +111,7 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
       e.n += 1;
       byConcept.set(a.question.conceptId, e);
     }
-    const verdict = pct >= 85 ? "Exam-ready 🔥" : pct >= 60 ? "Getting there" : "Keep drilling";
+    const verdict = pct >= 85 ? "Exam-ready" : pct >= 60 ? "Getting there" : "Keep drilling";
     return (
       <div className="sp-fly-in space-y-6">
         <Fx />

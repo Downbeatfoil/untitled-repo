@@ -141,20 +141,20 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
       <LabStyles />
       <div aria-hidden className="lab-grid pointer-events-none absolute inset-x-0 top-0 h-[520px]" />
       <header className="lab-rise relative text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#3d8bff]/40 bg-[#3d8bff]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#7fb0ff]">🥊 Course Cage Match</span>
-        <h1 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-6xl">Which class is <span className="text-gradient">scarier?</span></h1>
+        <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#9a9ca3]">Course Cage Match</span>
+        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.02em] text-white sm:text-6xl">Which class is <span className="text-gradient">scarier?</span></h1>
         <p className="mx-auto mt-3 max-w-xl text-base text-[#8a96aa]">Two courses enter. One leaves with the crown of dread. Five rounds, live commentary, zero mercy.</p>
       </header>
 
       <section className="lab-rise delay-2 relative mt-8" aria-label="Pick your fighters">
         <div className="grid items-stretch gap-3 md:grid-cols-[1fr_auto_1fr]">
           <Picker label="Fighter 1" side="a" value={a} onChange={setA} courses={courses} other={b} />
-          <div className="grid place-items-center"><div className="lab-glow grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-[#d6c78a] to-[#3d8bff] text-lg font-black text-[#06080c]">VS</div></div>
+          <div className="grid place-items-center"><div className="lab-glow grid h-14 w-14 place-items-center rounded-full bg-[#ececec] text-lg font-bold text-[#06080c]">VS</div></div>
           <Picker label="Fighter 2" side="b" value={b} onChange={setB} courses={courses} other={a} />
         </div>
         {(err || same) && <p role="alert" className="mt-3 rounded-lg border border-[#ff5d6c]/40 bg-[#ff5d6c]/10 px-3 py-2 text-sm text-[#ff9aa4]">{err ?? "A course can't fight itself. Pick two different fighters."}</p>}
         <button type="button" onClick={() => fight()} disabled={!ready || loading} className="btn btn-gold lab-btn-big mt-4 w-full !py-4 text-lg font-black tracking-wide">
-          {loading ? <span className="inline-flex items-center gap-3">Taping up the cage<span className="lab-dots"><span /><span /><span /></span></span> : ready ? `🥊 FIGHT: ${a} vs ${b}` : "Pick two fighters"}
+          {loading ? <span className="inline-flex items-center gap-3">Taping up the cage<span className="lab-dots"><span /><span /><span /></span></span> : ready ? `Fight: ${a} vs ${b}` : "Pick two fighters"}
         </button>
       </section>
 
@@ -165,7 +165,7 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
             <div aria-hidden className="pointer-events-none absolute -right-20 top-0 h-64 w-64 rounded-full bg-[#3d8bff]/15 blur-3xl" />
             <div className="relative flex items-start gap-3 sm:gap-5">
               <HpBar code={res.a.code} title={res.a.title} hp={hp.a} side="a" hit={hitNow && !aWon} />
-              <div className="mt-3 grid h-11 w-11 flex-none place-items-center rounded-full bg-gradient-to-br from-[#d6c78a] to-[#3d8bff] text-sm font-black text-[#06080c]">VS</div>
+              <div className="mt-3 grid h-11 w-11 flex-none place-items-center rounded-full bg-[#ececec] text-sm font-bold text-[#06080c]">VS</div>
               <HpBar code={res.b.code} title={res.b.title} hp={hp.b} side="b" hit={hitNow && aWon} />
             </div>
 
@@ -188,7 +188,7 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
                     <span className={!aWon ? "font-black text-[#7fb0ff]" : "text-[#8a96aa]"}>{round.bStat}</span>
                   </div>
                 )}
-                {hitNow && round && <p key={idx} className="lab-pop mt-2 text-2xl font-black text-[#ff5d6c]" style={{ textShadow: "0 0 20px #ff5d6c" }}>−{round.damage}</p>}
+                {hitNow && round && <p key={idx} className="lab-pop mt-2 text-2xl font-black text-[#ff5d6c]" >−{round.damage}</p>}
               </div>
               <Fighter f={res.b} side="b" lunge={hitNow && !aWon} down={finished && res.champion !== res.b.code} />
               {hitNow && <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(circle at 50% 50%, rgba(255,255,255,.55), transparent 60%)", animation: "lab-flash .5s ease-out both" }} />}
@@ -231,7 +231,7 @@ function Champion({ r, onCopy }: { r: VersusResult; onCopy: () => void }) {
   return (
     <div className="lab-rise mt-6">
       <Confetti active pieces={90} />
-      <section className="relative overflow-hidden rounded-3xl border border-[#B3A369]/60 bg-gradient-to-br from-[#1b1707] via-[#0e131b] to-[#0b1630] p-7 text-center sm:p-10" style={{ boxShadow: "0 0 90px -30px rgba(179,163,105,.8)" }} aria-label="Champion">
+      <section className="relative overflow-hidden rounded-3xl border border-[#B3A369]/60 bg-[#131417] p-7 text-center sm:p-10" aria-label="Champion">
         <div aria-hidden className="absolute left-1/2 top-0 h-60 w-60 -translate-x-1/2 rounded-full bg-[#B3A369]/25 blur-3xl" />
         <p className="relative text-5xl lab-float">🏆</p>
         <p className="eyebrow relative mt-2">Reigning champion of dread</p>

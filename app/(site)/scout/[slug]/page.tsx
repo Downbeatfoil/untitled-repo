@@ -98,7 +98,7 @@ export default function ScoutPage() {
         <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_380px]">
           <div>
             <div className="eyebrow flex items-center gap-2"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-good" />Live scout run</div>
-            <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-6xl">Scouting <span className="mono text-gradient">{code}</span></h1>
+            <h1 className="mt-3 text-4xl font-semibold tracking-[-0.02em] sm:text-5xl">Scouting <span className="mono text-goldb">{code}</span></h1>
             <p className="mt-3 max-w-xl text-base text-muted sm:text-lg">Four AI agents are searching the web and X in parallel. Every source they find is public and cited.</p>
             <div className="mono mt-6 flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted">
               <span>T+{String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}</span>
@@ -106,7 +106,7 @@ export default function ScoutPage() {
               <span><b className="text-goldb">{doneCount}/{AGENTS.length}</b> agents done</span>
             </div>
             <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
-              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.max(4, progress)}%`, background: "linear-gradient(90deg,#b3a369,#3d8bff)", boxShadow: "0 0 18px rgba(61,139,255,.6)" }} />
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.max(4, progress)}%`, background: "#b3a369" }} />
             </div>
           </div>
           <div className="mx-auto"><AgentSwarmViz courseCode={code} statuses={statuses} sources={sources} size={340} /></div>
@@ -125,7 +125,7 @@ export default function ScoutPage() {
       )}
       {ready && (
         <div className="card anim-up mt-6 flex items-center gap-4 border-[rgba(61,220,151,0.4)] p-5" role="status">
-          <div className="text-3xl">✨</div>
+          
           <div><div className="text-lg font-bold">Course pack ready</div><div className="text-sm text-muted">Opening your SmartPath dashboard…</div></div>
           <Link href={`/course/${slug}`} className="btn btn-gold ml-auto">Open now →</Link>
         </div>

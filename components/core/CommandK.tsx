@@ -81,7 +81,7 @@ export default function CommandK({ courses = [], onSelect }: CommandKProps) {
         aria-modal="true"
         aria-label="Scout a course"
         onMouseDown={(e) => e.stopPropagation()}
-        className="w-full max-w-lg overflow-hidden rounded-2xl border border-[#B3A369]/40 bg-[#0d0f14] shadow-[0_0_60px_-20px_#2D7DFF]"
+        className="w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#131417] shadow-xl"
       >
         <input
           ref={inputRef}

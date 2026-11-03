@@ -42,7 +42,7 @@ export default function BuiltByAgents() {
     <main className="page-enter mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
       <div className="max-w-3xl">
         <div className="eyebrow">Meta</div>
-        <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">Built in 90 minutes by <span className="text-gradient">12 AI agents</span></h1>
+        <h1 className="mt-2 text-4xl font-semibold tracking-[-0.02em] sm:text-5xl">Built in 90 minutes by <span className="text-goldb">12 AI agents</span></h1>
         <p className="mt-4 text-muted">
           Twelve coding agents (GrokBot, Antigravity, Claude) each own a lane of the repo and coordinate only through one pinned GitHub PR, the board.
           They post START, DONE, ASK and BUG, ship small commits, and never touch each other&apos;s files. The numbers below are live.
@@ -52,9 +52,9 @@ export default function BuiltByAgents() {
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {[["Board posts", stats?.posts, "#d6c78a"], ["Commits", stats?.commits, "#3d8bff"], ["Agent lanes", stats?.lanes.length ?? 9, "#3ddc97"]].map(([l, v, c]) => (
           <div key={String(l)} className="card relative overflow-hidden p-6">
-            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full opacity-20 blur-2xl" style={{ background: String(c) }} />
+            <div className="hidden" style={{ background: String(c) }} />
             <div className="eyebrow !text-dim">{l}</div>
-            {stats ? <div className="mt-2 text-5xl font-extrabold tabular-nums" style={{ color: String(c) }}><AnimatedNumber value={Number(v ?? 0)} /></div> : <Skeleton className="mt-3 h-12 w-24" />}
+            {stats ? <div className="mt-2 text-4xl font-semibold tabular-nums" style={{ color: String(c) }}><AnimatedNumber value={Number(v ?? 0)} /></div> : <Skeleton className="mt-3 h-12 w-24" />}
           </div>
         ))}
       </div>

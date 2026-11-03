@@ -23,8 +23,8 @@ export default function CourseCard({ course, onSelect, href }: CourseCardProps) 
     <>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#B3A369]">{course.code}</p>
-          <h3 className="mt-1 text-lg font-semibold leading-snug text-white">{course.title}</h3>
+          <p className="mono text-xs font-medium text-[#B3A369]">{course.code}</p>
+          <h3 className="mt-1 text-base font-semibold leading-snug text-white">{course.title}</h3>
         </div>
         <div
           className="grid h-14 w-14 shrink-0 place-items-center rounded-full"
@@ -42,17 +42,17 @@ export default function CourseCard({ course, onSelect, href }: CourseCardProps) 
       </p>
       <div className="mt-4 flex gap-4 text-xs text-neutral-500">
         <span>
-          <b className="text-[#7FB0FF]">{course.conceptCount}</b> concepts
+          <b className="font-medium text-neutral-200">{course.conceptCount}</b> concepts
         </span>
         <span>
-          <b className="text-[#7FB0FF]">{course.sourceCount}</b> sources
+          <b className="font-medium text-neutral-200">{course.sourceCount}</b> sources
         </span>
-        <span className="ml-auto text-[#B3A369] transition group-hover:translate-x-0.5">Scout →</span>
+        <span className="ml-auto text-neutral-500 transition group-hover:text-neutral-200">Open</span>
       </div>
     </>
   );
   const cls =
-    "group block w-full rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-5 text-left transition hover:-translate-y-0.5 hover:border-[#B3A369]/60 hover:shadow-[0_8px_40px_-12px_#B3A369] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2D7DFF]";
+    "group block w-full rounded-[10px] border border-white/[0.07] bg-[#131417] p-5 text-left transition-colors hover:border-white/15 hover:bg-[#18191d] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2D7DFF]";
   if (onSelect) {
     return (
       <button type="button" onClick={() => onSelect(course)} className={cls}>

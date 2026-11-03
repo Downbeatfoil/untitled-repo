@@ -31,12 +31,12 @@ const LINKS = [
 export default function Nav() {
   const pathname = usePathname() || "/";
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-[rgba(6,8,12,0.72)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-line bg-[rgba(11,12,14,0.92)]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo />
           <span className="whitespace-nowrap text-[15px] font-bold tracking-tight">
-            SmartPath <span className="text-gradient">Scout</span>
+            SmartPath <span className="text-muted font-medium">Scout</span>
           </span>
           <span className="badge hidden border-line2 text-dim sm:inline-flex">beta</span>
         </Link>
@@ -48,7 +48,7 @@ export default function Nav() {
                 key={l.href}
                 href={l.href}
                 className={`whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium sm:px-3 sm:text-sm transition-colors ${
-                  active ? "bg-[rgba(179,163,105,0.12)] text-goldb" : "text-muted hover:text-foreground"
+                  active ? "bg-[rgba(255,255,255,0.05)] text-foreground" : "text-muted hover:text-foreground"
                 } ${["/about", "/roast", "/versus", "/wall"].includes(l.href) ? "hidden md:block" : ""}`}
               >
                 {l.label === "Built by Agents" ? <><span className="sm:hidden">Agents</span><span className="hidden sm:inline">Built by Agents</span></> : l.label}

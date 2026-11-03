@@ -39,8 +39,8 @@ export default function CourseSearch({
   return (
     <div className="w-full max-w-2xl">
       <form onSubmit={submit} className="group relative" role="search" aria-label="Search for a Georgia Tech course">
-        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-[#B3A369] via-[#2D7DFF] to-[#B3A369] opacity-30 blur transition group-focus-within:opacity-70" />
-        <div className="relative flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0d0f14] p-2 pl-5">
+        <div className="absolute -inset-0.5 rounded-2xl hidden" />
+        <div className="relative flex items-center gap-2 rounded-xl border border-white/10 bg-[#101114] p-2 pl-5 focus-within:border-white/25">
           <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-[#B3A369]" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" strokeLinecap="round" />
@@ -62,7 +62,7 @@ export default function CourseSearch({
           <button
             type="submit"
             disabled={disabled || !value.trim()}
-            className="rounded-xl bg-[#B3A369] px-6 py-3 font-semibold text-black shadow-[0_0_24px_-6px_#B3A369] transition hover:bg-[#C9BB82] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2D7DFF] disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg bg-[#B3A369] px-5 py-3 font-semibold text-black transition hover:bg-[#C9BB82] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2D7DFF] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {buttonLabel} →
           </button>

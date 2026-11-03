@@ -30,7 +30,7 @@ function Stat({ label, value, color }: { label: string; value: number; color: st
   const v = useCount(value);
   return (
     <div className="relative overflow-hidden rounded-2xl border border-line bg-panel/80 px-4 py-3 text-center">
-      <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-20 blur-2xl" style={{ background: color }} />
+      <div className="hidden" style={{ background: color }} />
       <div className="text-[clamp(2rem,min(4.2vw,7vh),4.5rem)] font-extrabold leading-none tabular-nums" style={{ color, textShadow: `0 0 28px ${color}55` }}>{v}</div>
       <div className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.3em] text-muted">{label}</div>
     </div>

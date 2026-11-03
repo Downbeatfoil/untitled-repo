@@ -67,14 +67,14 @@ export default function CoursePage() {
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-3xl">
             <div className="flex items-center gap-2"><span className="eyebrow">Georgia Tech</span><ProviderPill pack={pack} /></div>
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl"><span className="mono text-gradient">{pack.course.code}</span></h1>
+            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em] sm:text-5xl"><span className="mono">{pack.course.code}</span></h1>
             <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">{pack.course.title}</div>
             <p className="mt-3 text-[15px] leading-relaxed text-muted">{pack.summary}</p>
             <div className="mt-5 flex flex-wrap gap-3">
               <ExportButton courseCode={pack.course.code} variant="primary" />
               <Link className="btn btn-ghost" href={`/scout/${slug}`}>↻ Re-scout</Link>
-              <Link className="btn btn-ghost" href={`/roast?c=${encodeURIComponent(pack.course.code)}`}>🔥 Roast this course</Link>
-              <Link className="btn btn-ghost" href={`/versus?a=${encodeURIComponent(pack.course.code)}`}>⚔️ Versus…</Link>
+              <Link className="btn btn-ghost" href={`/roast?c=${encodeURIComponent(pack.course.code)}`}>Roast this course</Link>
+              <Link className="btn btn-ghost" href={`/versus?a=${encodeURIComponent(pack.course.code)}`}>Compare with…</Link>
             </div>
           </div>
           <div className="flex flex-col items-center self-center">

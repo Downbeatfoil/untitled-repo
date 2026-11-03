@@ -80,8 +80,8 @@ export default function RoastClient({ courses }: { courses: CourseSummary[] }) {
       <LabStyles />
       <div aria-hidden className="lab-grid pointer-events-none absolute inset-x-0 top-0 h-[520px]" />
       <header className="lab-rise relative text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#B3A369]/40 bg-[#B3A369]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#d6c78a]">🔥 Schedule Roast</span>
-        <h1 className="mt-4 text-4xl font-black tracking-tight text-white sm:text-6xl">How cooked is <span className="text-gradient">your semester?</span></h1>
+        <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#9a9ca3]">Schedule Roast</span>
+        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.02em] text-white sm:text-6xl">How cooked is <span className="text-[#d6c78a]">your semester?</span></h1>
         <p className="mx-auto mt-3 max-w-xl text-base text-[#8a96aa]">Pick {MIN}–{MAX} Georgia Tech classes. Grok scores your survival odds, then roasts every one of them. Gently. Mostly.</p>
       </header>
 
@@ -127,7 +127,7 @@ export default function RoastClient({ courses }: { courses: CourseSummary[] }) {
         <button type="button" onClick={() => roast()} disabled={!ready || loading}
           className="btn btn-gold lab-btn-big mt-5 w-full !py-4 text-lg font-black tracking-wide">
           {loading ? <span className="inline-flex items-center gap-3">Grok is heating the grill<span className="lab-dots"><span /><span /><span /></span></span>
-            : ready ? "🔥 Roast my schedule" : `Pick ${need} more course${need > 1 ? "s" : ""} to roast`}
+            : ready ? "Roast my schedule" : `Pick ${need} more course${need > 1 ? "s" : ""} to roast`}
         </button>
       </section>
 
@@ -183,7 +183,7 @@ function Result({ r, onCopy, refEl }: { r: RoastResult; onCopy: () => void; refE
                 </div>
                 <div className="text-right"><p className="text-2xl font-black tabular-nums" style={{ color: hue }}>{Math.round(c.fearScore)}</p><p className="text-[10px] uppercase tracking-widest text-[#5b6679]">fear</p></div>
               </div>
-              <p className="mt-3 text-[15px] leading-relaxed text-[#e8ecf3]">🔥 {line}</p>
+              <p className="mt-3 text-[15px] leading-relaxed text-[#e8ecf3]">{line}</p>
               <p className="mt-3 text-xs text-[#8a96aa]">Final boss: <span className="font-semibold text-[#d6c78a]">{c.hardest}</span></p>
               <Link href={`/course/${courseSlug(c.code)}`} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#3d8bff] hover:text-[#7fb0ff]">Build my survival plan →</Link>
             </article>
