@@ -8,7 +8,7 @@ export default function Footer() {
           Built with <span className="text-goldb">Grok</span> · BDBI <span className="text-muted">SmartPath AI</span>
         </div>
         <div className="flex items-center gap-5">
-          <Link href="/built-by-agents" className="hover:text-foreground">Built by 9 agents</Link>
+          <Link href="/built-by-agents" className="hover:text-foreground">Built by 12 agents</Link>
           <Link href="/about" className="hover:text-foreground">About</Link>
           <span className="mono text-xs">Georgia Tech · public sources only</span>
         </div>

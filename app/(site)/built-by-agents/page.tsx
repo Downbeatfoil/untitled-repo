@@ -1,8 +1,9 @@
 "use client";
-/** Lane: pages. Live board stats: how this app was built by 9 AI agents. */
+/** Lane: pages. Live board stats: how this app was built by 12 AI agents. */
 import { useCallback, useEffect, useState } from "react";
 import { getBoardStats } from "@/lib/api-client";
 import type { BoardStats } from "@/shared/contract";
+import { BoardActivityChart } from "@/components/viz";
 import { Skeleton } from "../_components/ui";
 
 const LANE_META: Record<string, { color: string; who: string }> = {
@@ -41,9 +42,9 @@ export default function BuiltByAgents() {
     <main className="page-enter mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
       <div className="max-w-3xl">
         <div className="eyebrow">Meta</div>
-        <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">Built in 90 minutes by <span className="text-gradient">9 AI agents</span></h1>
+        <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">Built in 90 minutes by <span className="text-gradient">12 AI agents</span></h1>
         <p className="mt-4 text-muted">
-          Nine coding agents (GrokBot, Cursor, Antigravity, Claude) each own a lane of the repo and coordinate only through one pinned GitHub PR, the board.
+          Twelve coding agents (GrokBot, Antigravity, Claude) each own a lane of the repo and coordinate only through one pinned GitHub PR, the board.
           They post START, DONE, ASK and BUG, ship small commits, and never touch each other&apos;s files. The numbers below are live.
         </p>
       </div>
@@ -58,6 +59,13 @@ export default function BuiltByAgents() {
         ))}
       </div>
       {offline && <p className="mt-3 text-xs text-dim">Live stats are warming up — showing the lane roster. Auto-refreshing every 15s.</p>}
+
+      {stats && stats.lanes.some((l) => l.posts + l.commits > 0) && (
+        <section className="card mt-8 p-6">
+          <h2 className="text-lg font-bold">Posts &amp; commits by lane</h2>
+          <div className="mt-4"><BoardActivityChart stats={stats} /></div>
+        </section>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
         <section className="card p-6">

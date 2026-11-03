@@ -14,7 +14,7 @@ const GROK = [
   ["4 parallel specialists", "Exam Hunter, Syllabus Scout, Student Pulse, Concept Mapper."],
   ["Generation + grading", "Practice exams in the style of real exams; free-text answers graded with explanations."],
   ["Plans, outreach, chat", "Day-by-day study plans, polite professor emails, and course chat grounded in sources."],
-  ["Built by agents", "9 coding agents coordinated on one PR board. See the receipts."],
+  ["Built by agents", "12 coding agents coordinated on one PR board. See the receipts."],
 ];
 
 export default function About() {
