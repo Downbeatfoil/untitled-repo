@@ -1,23 +1,21 @@
 /** Lane: api. GET /api/health */
 import { NextResponse } from "next/server";
 import type { HealthResponse } from "@/shared/contract";
-import { grokConfigured } from "@/lib/ai/grok";
+import { grokConfigured, provider } from "@/lib/ai/grok";
 
 export const dynamic = "force-dynamic";
 
 export function GET() {
-  const hasXai = grokConfigured();
-  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
-  const provider: HealthResponse["provider"] = hasXai ? "grok" : hasGemini ? "gemini" : "none";
-  const isConfigured = provider !== "none";
+  const currentProvider = provider();
+  const configured = grokConfigured();
 
   const headers: Record<string, string> = {};
-  if (!isConfigured) {
+  if (!configured || currentProvider === "none") {
     headers["x-mocked"] = "1";
   }
 
   return NextResponse.json<HealthResponse>(
-    { ok: true, grokConfigured: isConfigured, provider },
+    { ok: true, grokConfigured: configured, provider: currentProvider },
     { headers }
   );
 }
