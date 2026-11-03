@@ -8,3 +8,4 @@ Use `askGrok` / `askGrokJson` from `@/lib/ai/grok`. Every function: if `!grokCon
 - [x] P1 `roast.ts`: `roastSchedule(packs: CoursePack[])` → `{ survivalOdds: number, verdict: string, perCourse: {code, line}[] }` savage-but-kind Grok roast of a semester schedule (for the lab lane). Export the type from this file.
 - [x] P2 `versus.ts`: `cageMatch(a, b)` → `{ rounds: {title, winner: code, commentary}[], champion: code }` Grok sports-commentator battle of two courses.
 - [x] P2 Prompt polish: Grok's voice = witty, confident, actually helpful.
+- [x] P1 `selfcheck.ts`: `npx tsx lib/ai-tools/selfcheck.ts` runs every function on the CS 1332 seed, prints PASS/FAIL + mocked flag (orchestrator request).
