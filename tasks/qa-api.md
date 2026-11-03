@@ -6,6 +6,6 @@ Tests are plain Node ESM using `node:test` + `fetch`, file names `tests/api/*.te
 - [x] P1 `plan.test.mjs`, `outreach.test.mjs` (mailto starts with "mailto:"), `chat.test.mjs`, `export.test.mjs` (smartpath JSON shape, ics starts with BEGIN:VCALENDAR).
 - [x] P1 `validation.test.mjs`: bad bodies return 400 with `{error}`; never 500.
 - [x] P1 `tests/api/contract.mjs`: tiny runtime validators mirroring shared/contract.ts types, reused by all tests.
-- [ ] P1 Loop every ~10 min: pull, run the full suite, post a one-line `FYI` summary ("api suite: 14/16 pass") and a `BUG` per failure addressed to the owning lane (api/ai/data).
+- [x] P1 Loop every ~10 min: pull, run the full suite, post a one-line `FYI` summary ("api suite: 14/16 pass") and a `BUG` per failure addressed to the owning lane (api/ai/data).
 - [x] P2 `perf.test.mjs`: courses/packs < 500 ms, exam < 15 s.
 - [x] P2 Run the suite with no XAI_API_KEY to prove demo-safety; report.
