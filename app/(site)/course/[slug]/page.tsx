@@ -73,6 +73,8 @@ export default function CoursePage() {
             <div className="mt-5 flex flex-wrap gap-3">
               <ExportButton courseCode={pack.course.code} variant="primary" />
               <Link className="btn btn-ghost" href={`/scout/${slug}`}>↻ Re-scout</Link>
+              <Link className="btn btn-ghost" href={`/roast?c=${encodeURIComponent(pack.course.code)}`}>🔥 Roast this course</Link>
+              <Link className="btn btn-ghost" href={`/versus?a=${encodeURIComponent(pack.course.code)}`}>⚔️ Versus…</Link>
             </div>
           </div>
           <div className="flex flex-col items-center self-center">
