@@ -2,11 +2,12 @@
 /**
  * Lane: components. Provider status pill: 'Live · Grok' / 'Live · Gemini' (green) vs 'Demo data' (amber).
  * - Data is demo when `mocked` (or pack.mocked) is true, or provider === "none".
- * - Provider comes from the `provider` prop, else from /api/health's optional `provider` field (read through
- *   lib/api-client's `getHealth` once it exists; no raw fetch here). If provider is unknown we keep the old
- *   wording ('Live Grok'). Gemini output is never labelled Grok.
+ * - Provider comes from the `provider` prop, else from /api/health's optional `provider` field (via lib/api-client's
+ *   `getHealth`; no raw fetch here). If provider is unknown we show a neutral
+ *   'Live AI'. Gemini output is never labelled Grok.
  */
 import { useEffect, useState } from "react";
+import { getHealth } from "@/lib/api-client";
 import type { CoursePack } from "@/shared/contract";
 
 export type Provider = "grok" | "gemini" | "none";
@@ -22,14 +23,7 @@ export interface GrokStatusPillProps {
 
 let healthProvider: Promise<Provider | undefined> | null = null;
 function loadProvider(): Promise<Provider | undefined> {
-  if (!healthProvider) {
-    healthProvider = import("@/lib/api-client")
-      .then(async (m) => {
-        const fn = (m as unknown as { getHealth?: () => Promise<{ provider?: Provider }> }).getHealth;
-        return fn ? (await fn()).provider : undefined;
-      })
-      .catch(() => undefined);
-  }
+  if (!healthProvider) healthProvider = getHealth().then((h) => h.provider).catch(() => undefined);
   return healthProvider;
 }
 
@@ -58,7 +52,7 @@ export default function GrokStatusPill({ pack, mocked, provider, className = "" 
       } ${className}`}
     >
       <span aria-hidden className={`h-2 w-2 rounded-full ${demo ? "bg-amber-400" : "animate-pulse bg-emerald-400"}`} />
-      {demo ? "Demo data" : p ? `Live · ${name}` : "Live Grok"}
+      {demo ? "Demo data" : p ? `Live · ${name}` : "Live AI"}
     </span>
   );
 }
