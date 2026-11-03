@@ -50,6 +50,7 @@ type ConceptNodeData = {
   dim: boolean;
   hl: boolean;
   step?: number;
+  level: number;
 };
 type CNode = Node<ConceptNodeData, "concept">;
 
@@ -57,9 +58,9 @@ const LEVEL_GAP = 270;
 const ROW_GAP = 40;
 
 function ConceptNode({ data }: NodeProps<CNode>) {
-  const { size, color, label, freq, selected, dim, hl, step } = data;
+  const { size, color, label, freq, selected, dim, hl, step, level } = data;
   return (
-    <div className="flex flex-col items-center" style={{ width: 150, opacity: dim ? 0.3 : 1, transition: "opacity .2s" }}>
+    <div className="flex flex-col items-center" style={{ width: 150, opacity: dim ? 0.3 : 1, transition: "opacity .2s", animation: `vz-node-in .6s cubic-bezier(.2,.9,.3,1.2) ${level * 0.16}s backwards` }}>
       <div className="relative" style={{ width: size, height: size }}>
         <Handle type="target" position={Position.Left} style={{ opacity: 0, top: "50%" }} />
         <Handle type="source" position={Position.Right} style={{ opacity: 0, top: "50%" }} />
@@ -84,6 +85,13 @@ function ConceptNode({ data }: NodeProps<CNode>) {
   );
 }
 const nodeTypes = { concept: ConceptNode };
+/** Intro: nodes pop in layer by layer, edges fade in after. `from`-only keyframes keep inline opacity as the end state. */
+const INTRO_CSS = `
+@keyframes vz-node-in{from{opacity:0;transform:scale(.35) translateY(8px)}}
+@keyframes vz-edge-in{from{opacity:0}}
+.vz-cg .react-flow__edge{animation:vz-edge-in 1s ease-out .5s backwards}
+@media (prefers-reduced-motion:reduce){.vz-cg .react-flow__edge,.vz-cg .react-flow__node *{animation:none!important}}
+`;
 const EMPTY_CONCEPTS: Concept[] = [];
 const EMPTY_EDGES: ConceptEdge[] = [];
 const EMPTY_TOPICS: ExamTopic[] = [];
@@ -187,6 +195,7 @@ export default function ConceptGraph({
             dim: !!neighbors && !neighbors.has(id),
             hl: !!hlSet && hlSet.has(id),
             step: stepNumbers?.[id],
+            level: l,
           },
           draggable: true,
         });
@@ -240,7 +249,8 @@ export default function ConceptGraph({
   }
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-950 ${className}`} style={{ height }}>
+    <div className={`vz-cg relative overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-950 ${className}`} style={{ height }}>
+      <style>{INTRO_CSS}</style>
       <ReactFlow
         nodes={nodes}
         edges={flowEdges}

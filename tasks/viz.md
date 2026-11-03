@@ -16,3 +16,9 @@ All components are `"use client"`, take contract types as props, and look great 
 - [x] P1 `SemesterHeat.tsx` {packs}: stacked fear bars for a whole schedule (lab /roast).
 - [x] P1 `BattleBars.tsx` {a,b}: animated health bars for lab /versus.
 - [x] P1 `SourceTimeline.tsx` {sources}: sources popping in over time for the scout page.
+
+## Orchestrator round 3
+- [x] P1 ConceptGraph intro animation: nodes fade/scale in by layer on load.
+- [x] P1 `AnimatedNumber.tsx`: count-up for fear score + stats.
+- [x] P0 `PackReadyBurst.tsx`: full-screen "Course pack ready" reveal for scout→course.
+- [x] P0 `RoastMeter.tsx`: big animated survival-odds dial for lab's /roast.
