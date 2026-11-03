@@ -1,7 +1,7 @@
 # ai lane — `lib/ai/`  (Grok research: scout + concept mapper)
 **SCOPE CHANGE:** exam/grade/plan/outreach/chat moved to the new `ai-tools` lane (`lib/ai-tools`). Skip those tasks; go deep on scout quality.
 `lib/ai/grok.ts` already has `askGrok`, `askGrokJson`, and `researchWithGrok(prompt, {tools: ["web_search","x_search"]})`.
-- [ ] P0 `lib/ai/agents.ts`: one function per scout agent, each returning `{ sources: Source[], notes: string }`:
+- [x] P0 `lib/ai/agents.ts`: one function per scout agent, each returning `{ sources: Source[], notes: string }`:
       `examHunter(code)` (web_search: publicly posted past exams/practice tests for the GT course), `syllabusScout(code)` (web_search: syllabus, course page, professors, schedule), `studentPulse(code)` (x_search + web_search for r/gatech: what's hard, quotes w/ sentiment). Map citations → `Source` with correct `kind` + `foundBy`.
 - [ ] P0 `lib/ai/conceptMapper.ts`: `buildPack(code, findings): Promise<CoursePack>` using `askGrokJson` with a strict JSON schema in the prompt; validate with zod; repair or fall back to seed on bad JSON.
 - [ ] P0 `lib/ai/scout.ts`: `async function* runScout(code): AsyncGenerator<ScoutEvent>` — run the 3 research agents in PARALLEL, yield agent status + log + source events as each finishes, then concept-mapper → pack → done. If no key or any failure: `yield* replayScout(seed or generic pack)` from lib/data. Never throw.
