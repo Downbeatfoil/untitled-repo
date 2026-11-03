@@ -241,7 +241,7 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
               const wrongPick = answered && picked && !g?.correct;
               return (
                 <button
-                  key={c}
+                  key={`${i}-${c}`}
                   type="button"
                   role="radio"
                   aria-checked={picked}
