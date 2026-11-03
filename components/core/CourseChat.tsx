@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { postChat } from "@/lib/api-client";
 import type { ChatMessage, Source } from "@/shared/contract";
 import Button from "./Button";
+import { fallbackChat } from "./fallback";
+import GrokStatusPill from "./GrokStatusPill";
 import Fx from "./Fx";
 
 export interface CourseChatProps {
@@ -40,10 +42,15 @@ export default function CourseChat({ courseCode, sources = [], suggestions = DEF
     setLoading(true);
     setError(null);
     try {
-      const res = await postChat({ courseCode, messages: next.map(({ role, content }) => ({ role, content })) });
+      let res;
+      try {
+        res = await postChat({ courseCode, messages: next.map(({ role, content }) => ({ role, content })) });
+      } catch {
+        res = await fallbackChat(courseCode, content); // demo safety: never show a raw HTTP error
+      }
       setTurns([...next, { role: "assistant", content: res.reply, cited: res.citedSourceIds, mocked: res.mocked }]);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Chat failed");
+    } catch {
+      setError("Couldn't get an answer right now. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -79,6 +86,7 @@ export default function CourseChat({ courseCode, sources = [], suggestions = DEF
               }`}
             >
               <p className="whitespace-pre-wrap">{t.content}</p>
+              {t.role === "assistant" && t.mocked && <GrokStatusPill mocked className="mt-2 !px-2 !py-0.5 !text-[10px]" />}
               {t.cited && t.cited.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {t.cited.map((id) => {

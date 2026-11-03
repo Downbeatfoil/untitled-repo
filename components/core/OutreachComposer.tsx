@@ -6,6 +6,8 @@ import { buildMailto } from "@/lib/export/mailto";
 import type { OutreachDraft, Professor } from "@/shared/contract";
 import Badge from "./Badge";
 import Button from "./Button";
+import { fallbackOutreach } from "./fallback";
+import GrokStatusPill from "./GrokStatusPill";
 import Skeleton from "./Skeleton";
 
 export interface OutreachComposerProps {
@@ -35,17 +37,24 @@ export default function OutreachComposer({ courseCode, professors, studentName }
   async function generate() {
     setLoading(true);
     setError(null);
+    let d: OutreachDraft | null = null;
     try {
-      const d = await postOutreach({ courseCode, professorName: prof.name, studentName: name.trim() || undefined, tone });
+      d = await postOutreach({ courseCode, professorName: prof.name, studentName: name.trim() || undefined, tone });
+    } catch {
+      try {
+        // Demo safety: never show a raw HTTP error; fall back to the seed draft (human still reviews + sends).
+        d = await fallbackOutreach(courseCode, prof, name.trim());
+      } catch {
+        setError("Couldn't draft the email right now. Please try again.");
+      }
+    }
+    if (d) {
       setDraft(d);
-      setTo(d.to ?? prof.email ?? "");
+      setTo(d.to || prof.email || "");
       setSubject(d.subject);
       setBody(d.body);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't draft the email");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }
 
   const mailto = buildMailto(to || undefined, subject, body);
@@ -135,7 +144,7 @@ export default function OutreachComposer({ courseCode, professors, studentName }
             <Button variant="outline" onClick={copy}>
               {copied ? "Copied ✓" : "Copy"}
             </Button>
-            {draft.mocked && <Badge>demo draft</Badge>}
+            <GrokStatusPill mocked={draft.mocked} />
           </div>
         </div>
       )}

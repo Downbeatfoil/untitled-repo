@@ -5,7 +5,9 @@ import { exportUrl, postPlan } from "@/lib/api-client";
 import type { Concept, StudyPlan } from "@/shared/contract";
 import Badge from "./Badge";
 import Button from "./Button";
+import { fallbackPlan } from "./fallback";
 import Fx from "./Fx";
+import GrokStatusPill from "./GrokStatusPill";
 import Skeleton from "./Skeleton";
 
 export interface StudyPlannerProps {
@@ -47,11 +49,16 @@ export default function StudyPlanner({ courseCode, concepts = [] }: StudyPlanner
     setLoading(true);
     setError(null);
     try {
-      const p = await postPlan({ courseCode, examDate, hoursPerDay: hours });
+      let p: StudyPlan;
+      try {
+        p = await postPlan({ courseCode, examDate, hoursPerDay: hours });
+      } catch {
+        p = await fallbackPlan(courseCode, examDate, hours); // demo safety: never show a raw HTTP error
+      }
       setPlan(p);
       setUsedKey({ examDate, hours });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't build a plan");
+    } catch {
+      setError("Couldn't build a plan right now. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -108,7 +115,7 @@ export default function StudyPlanner({ courseCode, concepts = [] }: StudyPlanner
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-neutral-400">
               <b className="text-white">{plan.days.length}</b> days · <b className="text-white">{Math.round((totalMin / 60) * 10) / 10}</b> hours total
-              {plan.mocked && <Badge tone="neutral" className="ml-2">demo plan</Badge>}
+              <GrokStatusPill mocked={plan.mocked} className="ml-2" />
             </p>
             <Button href={icsHref} download variant="blue" size="sm">
               📅 Add to calendar (.ics)

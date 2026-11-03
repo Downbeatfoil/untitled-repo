@@ -9,7 +9,9 @@ import type { Concept, GradeResponse, PracticeExam as PracticeExamData, Question
 import Badge from "./Badge";
 import Button from "./Button";
 import Confetti from "./Confetti";
+import { fallbackExam, fallbackGrade } from "./fallback";
 import Fx from "./Fx";
+import GrokStatusPill from "./GrokStatusPill";
 import Skeleton from "./Skeleton";
 
 export interface PracticeExamProps {
@@ -55,9 +57,13 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
     setChoice("");
     setText("");
     try {
-      setExam(await postExam({ courseCode, count, conceptIds }));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't build the exam");
+      try {
+        setExam(await postExam({ courseCode, count, conceptIds }));
+      } catch {
+        setExam(await fallbackExam(courseCode, count, conceptIds)); // demo safety: never show a raw HTTP error
+      }
+    } catch {
+      setError("Couldn't build the exam right now.");
     } finally {
       setLoading(false);
     }
@@ -119,7 +125,7 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
           <p className="mt-1 text-lg font-semibold text-[#7FB0FF]">
             {pct}% · {verdict}
           </p>
-          {exam.mocked && <p className="mt-1 text-xs text-neutral-500">Demo questions</p>}
+          <div className="mt-2"><GrokStatusPill mocked={exam.mocked || answers.some((a) => a.grade.mocked)} /></div>
         </div>
         <div>
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-neutral-400">By concept</h3>
@@ -180,15 +186,12 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
     let grade: GradeResponse;
     try {
       grade = await postGrade({ courseCode, question: q, userAnswer });
-    } catch (e) {
-      if (q.type === "mcq") {
-        // Never block the demo: grade multiple choice locally if the API is down.
-        const ok = userAnswer === q.answer;
+    } catch {
+      try {
+        grade = await fallbackGrade(q, userAnswer); // demo safety: never show a raw HTTP error
+      } catch {
+        const ok = q.type === "mcq" && userAnswer === q.answer;
         grade = { correct: ok, score: ok ? 1 : 0, feedback: q.explanation, mocked: true };
-      } else {
-        setGradeError(e instanceof Error ? e.message : "Grading failed");
-        setGrading(false);
-        return;
       }
     }
     setCurrent({ question: q, userAnswer, grade });
@@ -216,7 +219,8 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
           <span>
             Question <b className="text-white">{idx + 1}</b> of {total}
           </span>
-          <span className="flex gap-2">
+          <span className="flex items-center gap-2">
+            {(exam.mocked || answers.some((a) => a.grade.mocked) || current?.grade.mocked) && <GrokStatusPill mocked />}
             <Badge tone="blue">{label(q.conceptId)}</Badge>
             <Badge tone={DIFF_TONE[q.difficulty]}>{q.difficulty}</Badge>
           </span>
