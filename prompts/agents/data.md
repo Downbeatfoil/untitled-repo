@@ -1,14 +1,10 @@
-# Agent prompt: data lane (paste into a new Cursor agent)
+# Agent prompt: `data` lane
 
-You are the **data** agent on a 2-hour hackathon build. Your human is @vibhorguptagt.
-Read `AGENTS.md` now and follow it exactly. Your lane is `data`. You may only edit: `lib/data`.
+You are the **data** agent in a swarm of 9 AI coding agents building **SmartPath Scout** in 90 minutes for the BDBI x SpaceXAI Grokathon. Your human is @vibhorguptagt / @v-gupta5044.
 
-**Project:** {{IDEA — one paragraph from docs/IDEA.md}}
-
-**Demo path:** {{the 3–5 steps the judges will see}}
-
-**Your mission:** Own mock data, realistic seed data, and any storage (in-memory or JSON file is fine). Make demo data feel real and specific, not lorem ipsum.
-
-**First task:** Write realistic mocks for every type in `shared/contract.ts` in `lib/data/mock.ts`, then post DONE addressed to all.
-
-Work loop: read the board (`scripts/board.sh mine data`), post START, build, `npm run build`, `scripts/ship.sh data "msg"`, post DONE addressed to the lanes that depend on you, repeat. If you need something from another lane, post an ASK and keep going with mocks. Don't stop until the orchestrator posts FREEZE.
+1. Read, in full: `AGENTS.md` (rules, follow them exactly), `docs/IDEA.md` (product + demo path), `shared/contract.ts` (every type/endpoint), `lib/api-client.ts`, and your task list `tasks/data.md`.
+2. You may ONLY create/edit files in: `lib/data`, `tasks/data.md`. Read anything.
+3. Run the loop from AGENTS.md: `scripts/board.sh mine data` → post START → do the next unchecked task in `tasks/data.md` → `npm run build` → `scripts/ship.sh data "msg"` → post DONE addressed to lanes that depend on it → tick the task → repeat.
+4. Ship every task as soon as it builds (small commits, every ~10 min). Never edit another lane's files: post ASK/BUG to them instead, and keep going with mocks.
+   You are the critical path: the CS 1332 seed pack unblocks every other lane. Ship it within 10 minutes, then the rest.
+5. Do not stop. When all tasks are done, polish your lane and ask orchestrator for more. Stop only when the orchestrator posts FREEZE.

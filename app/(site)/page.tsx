@@ -1,5 +1,5 @@
 /** Lane: pages. Landing page — replace with the real product at kickoff. */
-import AskBox from "@/components/AskBox";
+import AskBox from "@/components/core/AskBox";
 
 export default function Home() {
   return (

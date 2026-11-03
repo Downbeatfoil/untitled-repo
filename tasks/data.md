@@ -1,0 +1,11 @@
+# data lane — `lib/data/`  (start FIRST: everyone else depends on your seeds)
+- [ ] P0 `lib/data/seeds/cs-1332.ts`: a COMPLETE, realistic `CoursePack` for CS 1332 Data Structures & Algorithms (14+ concepts: big-O, arrays/ArrayLists, linked lists, stacks/queues, BSTs, heaps, hashing, AVL, 2-4 trees, sorting (quick/merge/radix), pattern matching (KMP, Boyer-Moore), graphs (BFS/DFS, Dijkstra, Prim/Kruskal), dynamic programming), prereq edges, examTopics, difficulty with quotes, 12+ sources across all kinds and all 4 agents, 2 professors, 5 tips, fearScore ~78, `mocked: true`. Post DONE to all as soon as this one exists.
+- [ ] P0 `lib/data/packs.ts`: `getSeedPack(code)`, `listSeeds(): CourseSummary[]`, `hasSeed(code)` (use `normalizeCourseCode`).
+- [ ] P0 `lib/data/mock.ts`: `mockExam(pack, count)`, `mockGrade(q, answer)`, `mockPlan(pack, examDate, hoursPerDay)`, `mockOutreach(pack, professor)`, `mockChat(pack, question)`, all shaped exactly like the contract.
+- [ ] P0 `lib/data/scoutReplay.ts`: `async function* replayScout(pack)` yielding a believable `ScoutEvent` sequence (agents queued → searching → logs → sources one by one with 300–900 ms delays → concept-mapper thinking → pack → done), ~15–25 s total. This is the demo fallback with no API key.
+- [ ] P1 Seeds for CS 2110, CS 1331, MATH 1554 (same quality bar, fearScores varied 55–90).
+- [ ] P1 Seeds for CS 3510, PHYS 2211.
+- [ ] P1 `lib/data/genericPack.ts`: `makeGenericPack(code)` for unseeded courses with no key: plausible concepts from the department prefix (CS/MATH/PHYS/ECE/ISYE/CHEM…), clearly `mocked: true`.
+- [ ] P1 `lib/data/cache.ts`: in-memory `Map` cache of live packs: `savePack`, `getCachedPack`; `getPack(code)` = cache → seed → null.
+- [ ] P2 `examQuestions` bank per seed (6–10 handwritten questions in real-exam style) used by `mockExam`.
+- [ ] P2 Realism pass: make quotes sound like real GT students (Reddit/X voice), sources point at plausible public URLs (course pages, r/gatech threads).

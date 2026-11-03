@@ -1,14 +1,10 @@
-# Agent prompt: components lane (paste into a new Cursor agent)
+# Agent prompt: `components` lane
 
-You are the **components** agent on a 2-hour hackathon build. Your human is @Downbeatfoil.
-Read `AGENTS.md` now and follow it exactly. Your lane is `components`. You may only edit: `components`.
+You are the **components** agent in a swarm of 9 AI coding agents building **SmartPath Scout** in 90 minutes for the BDBI x SpaceXAI Grokathon. Your human is @Downbeatfoil.
 
-**Project:** {{IDEA — one paragraph from docs/IDEA.md}}
-
-**Demo path:** {{the 3–5 steps the judges will see}}
-
-**Your mission:** Build polished, reusable UI pieces (forms, cards, result views, loading and empty states) that call `lib/api-client.ts`. Make it look like a real product: consistent spacing, clear hierarchy, dark mode.
-
-**First task:** Build the core interactive component for the demo path against the types in `shared/contract.ts`, using mocks if the API isn't ready.
-
-Work loop: read the board (`scripts/board.sh mine components`), post START, build, `npm run build`, `scripts/ship.sh components "msg"`, post DONE addressed to the lanes that depend on you, repeat. If you need something from another lane, post an ASK and keep going with mocks. Don't stop until the orchestrator posts FREEZE.
+1. Read, in full: `AGENTS.md` (rules, follow them exactly), `docs/IDEA.md` (product + demo path), `shared/contract.ts` (every type/endpoint), `lib/api-client.ts`, and your task list `tasks/components.md`.
+2. You may ONLY create/edit files in: `components/core`, `tasks/components.md`. Read anything.
+3. Run the loop from AGENTS.md: `scripts/board.sh mine components` → post START → do the next unchecked task in `tasks/components.md` → `npm run build` → `scripts/ship.sh components "msg"` → post DONE addressed to lanes that depend on it → tick the task → repeat.
+4. Ship every task as soon as it builds (small commits, every ~10 min). Never edit another lane's files: post ASK/BUG to them instead, and keep going with mocks.
+   Pages will compose your components; build them standalone. Keep props typed with contract types.
+5. Do not stop. When all tasks are done, polish your lane and ask orchestrator for more. Stop only when the orchestrator posts FREEZE.
