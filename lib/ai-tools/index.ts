@@ -6,3 +6,5 @@ export { generatePlan } from "./plan";
 export { courseChat } from "./chat";
 export { draftOutreach } from "./outreach";
 export type { OutreachTone } from "./outreach";
+export { cageMatch } from "./versus";
+export type { VersusResult, VersusRound } from "./versus";

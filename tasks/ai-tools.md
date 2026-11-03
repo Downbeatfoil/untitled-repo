@@ -6,5 +6,5 @@ Use `askGrok` / `askGrokJson` from `@/lib/ai/grok`. Every function: if `!grokCon
 - [x] P1 `outreach.ts`: `draftOutreach(pack, professor, studentName?, tone)`: short respectful email asking to share past exams with SmartPath; `mailto` via `buildMailto` from `@/lib/export`.
 - [x] P1 `chat.ts`: `courseChat(pack, messages)`: grounded in the pack + sources, returns `citedSourceIds`.
 - [x] P1 `roast.ts`: `roastSchedule(packs: CoursePack[])` → `{ survivalOdds: number, verdict: string, perCourse: {code, line}[] }` savage-but-kind Grok roast of a semester schedule (for the lab lane). Export the type from this file.
-- [ ] P2 `versus.ts`: `cageMatch(a, b)` → `{ rounds: {title, winner: code, commentary}[], champion: code }` Grok sports-commentator battle of two courses.
+- [x] P2 `versus.ts`: `cageMatch(a, b)` → `{ rounds: {title, winner: code, commentary}[], champion: code }` Grok sports-commentator battle of two courses.
 - [x] P2 Prompt polish: Grok's voice = witty, confident, actually helpful.

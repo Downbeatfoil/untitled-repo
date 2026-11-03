@@ -3,6 +3,7 @@
  * roastSchedule(packs) -> RoastResult. Never throws; mocked:true fallback when Grok is unavailable.
  */
 import type { CoursePack } from "@/shared/contract";
+import { mockRoast as dataMockRoast } from "@/lib/data";
 import { clampNum, courseLine, grokJsonOrNull, hardestOf, toStr, topExamTopic } from "./jsonCall";
 
 export interface RoastResult {
@@ -70,10 +71,18 @@ export async function roastSchedule(packs: CoursePack[]): Promise<RoastResult> {
       const verdict = toStr(out?.verdict);
       if (out && verdict) {
         const lines = Array.isArray(out.perCourse) ? out.perCourse : [];
-        const fallback = mockRoast(list);
+        const fallback = (() => {
+          try {
+            const m = dataMockRoast(list);
+            if (m?.perCourse?.length === list.length) return m;
+          } catch {
+            /* use inline */
+          }
+          return mockRoast(list);
+        })();
         const perCourse = list.map((p, i) => {
           const hit =
-            lines.find((l) => toStr(l?.code).toUpperCase().replace(/\s+/g, "") === p.course.code.toUpperCase().replace(/\s+/g, "")) ?? lines[i];
+            lines.find((l) => toStr(l?.code).toUpperCase().replace(/\s+/g, "") === p.course.code.toUpperCase().replace(/\s+/g, "")) ?? (lines.length === list.length ? lines[i] : undefined);
           return { code: p.course.code, line: toStr(hit?.line, fallback.perCourse[i].line) };
         });
         return {
@@ -86,6 +95,12 @@ export async function roastSchedule(packs: CoursePack[]): Promise<RoastResult> {
     }
   } catch (err) {
     console.warn("[ai-tools] roastSchedule failed:", (err as Error)?.message);
+  }
+  try {
+    const m = dataMockRoast(list);
+    if (m?.verdict && m.perCourse?.length === list.length) return { ...m, mocked: true };
+  } catch {
+    /* fall through to inline mock */
   }
   try {
     return mockRoast(list);
