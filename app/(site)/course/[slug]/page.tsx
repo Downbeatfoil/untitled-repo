@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import type { CoursePack } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
-import { ConceptGraph, DifficultyHeatmap, ExamTopicsChart, FearGauge, SourceKindDonut } from "@/components/viz";
+import { ConceptGraph, DifficultyHeatmap, ExamTopicsChart, FearGauge, LearningPath, SourceKindDonut } from "@/components/viz";
 import GrokStatusPill from "@/components/core/GrokStatusPill";
 import ShareCard from "@/components/core/ShareCard";
 import CourseChat from "@/components/core/CourseChat";
@@ -56,6 +56,7 @@ export default function CoursePage() {
     </main>
   );
 
+  const hardest = [...pack.difficulty].sort((a, b) => b.score - a.score)[0]?.conceptId;
   const nameOf = new Map(pack.concepts.map((c) => [c.id, c.label]));
   return (
     <main className="page-enter mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
@@ -97,6 +98,11 @@ export default function CoursePage() {
                 </Section>
               </div>
               <Section title="Difficulty heatmap" sub="Hardest concepts first"><DifficultyHeatmap pack={pack} /></Section>
+              {hardest && (
+                <Section title="Path to mastery" sub={`The prerequisite chain to conquer the hardest concept: ${nameOf.get(hardest) ?? hardest}`}>
+                  <LearningPath pack={pack} targetConceptId={hardest} graphHeight={360} />
+                </Section>
+              )}
               <div className="grid gap-6 lg:grid-cols-2">
                 <Section title="Where the intel came from" sub="Source mix across agents"><SourceKindDonut pack={pack} /></Section>
                 <ShareCard pack={pack} />

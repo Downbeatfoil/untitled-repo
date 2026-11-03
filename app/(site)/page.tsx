@@ -7,6 +7,7 @@ import type { CourseSummary } from "@/shared/contract";
 import { courseSlug } from "@/shared/contract";
 import CourseCard from "@/components/core/CourseCard";
 import CourseSearch from "@/components/core/CourseSearch";
+import { GTConstellation } from "@/components/viz";
 import { Skeleton } from "./_components/ui";
 import { loadCourses } from "./_lib/data";
 
@@ -37,6 +38,7 @@ export default function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="grid-bg pointer-events-none absolute inset-0" />
+        {sorted && <div className="pointer-events-none absolute inset-0 opacity-40" style={{ maskImage: "radial-gradient(ellipse 45% 55% at 50% 45%, transparent 35%, #000 85%)", WebkitMaskImage: "radial-gradient(ellipse 45% 55% at 50% 45%, transparent 35%, #000 85%)" }}><GTConstellation courses={sorted} ambient className="h-full w-full" /></div>}
         <div className="relative mx-auto max-w-4xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pt-24">
           <div className="anim-up inline-flex items-center gap-2 rounded-full border border-line2 bg-[rgba(255,255,255,0.03)] px-3 py-1.5 text-xs text-muted">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-good" />
