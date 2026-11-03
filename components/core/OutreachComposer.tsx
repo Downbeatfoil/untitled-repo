@@ -2,6 +2,7 @@
 /** Lane: components. Grok drafts, you send. Professor + tone → postOutreach → editable draft → mailto + copy. */
 import { useState } from "react";
 import { postOutreach } from "@/lib/api-client";
+import { buildMailto } from "@/lib/export/mailto";
 import type { OutreachDraft, Professor } from "@/shared/contract";
 import Badge from "./Badge";
 import Button from "./Button";
@@ -47,7 +48,7 @@ export default function OutreachComposer({ courseCode, professors, studentName }
     }
   }
 
-  const mailto = `mailto:${encodeURIComponent(to).replace(/%40/g, "@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const mailto = buildMailto(to || undefined, subject, body);
 
   async function copy() {
     try {
