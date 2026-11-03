@@ -74,20 +74,24 @@ function parseComment(c: RawComment): BoardPost | null {
   };
 }
 
-async function allComments(): Promise<{ posts: BoardPost[]; total: number }> {
+async function allComments(): Promise<{ posts: BoardPost[]; total: number; counts: Record<string, number> }> {
   const base = `${API}/issues/${BOARD_ISSUE}/comments?per_page=100`;
   const first = await gh(base);
   const last = lastPage(first.link);
   let rows = first.json as RawComment[];
   let total = rows.length;
+  const counts: Record<string, number> = {};
+  const tally = (list: RawComment[]) => { for (const c of list) { const p = parseComment(c); if (p) counts[p.lane] = (counts[p.lane] ?? 0) + 1; } };
+  tally(rows);
   if (last > 1) {
     const tail = (await gh(`${base}&page=${last}`)).json as RawComment[];
     total = (last - 1) * 100 + tail.length;
     rows = tail;
+    tally(tail);
     if (tail.length < 30) rows = [...((await gh(`${base}&page=${last - 1}`)).json as RawComment[]), ...tail];
   }
   const all = rows.map(parseComment).filter((p): p is BoardPost => !!p);
-  return { posts: all.slice(-30), total };
+  return { posts: all.slice(-30), total, counts };
 }
 
 async function commitInfo(): Promise<{ total: number; recent: BoardFeed["recentCommits"]; byLane: Record<string, number> }> {
@@ -112,8 +116,7 @@ async function commitInfo(): Promise<{ total: number; recent: BoardFeed["recentC
 
 async function build(): Promise<BoardFeed> {
   const [c, k] = await Promise.all([allComments(), commitInfo()]);
-  const perLane: Record<string, number> = {};
-  for (const p of c.posts) perLane[p.lane] = (perLane[p.lane] ?? 0) + 1;
+  const perLane = c.counts;
   const laneIds = new Set([...Object.keys(perLane), ...Object.keys(k.byLane)]);
   return {
     posts: c.posts,

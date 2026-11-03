@@ -9,11 +9,11 @@ import type { BoardFeed, BoardPost } from "./types";
 import { LANES, ORCH, TYPE_COLOR } from "./types";
 
 const W = 1000;
-const H = 640;
+const H = 700;
 const CX = W / 2;
-const CY = H / 2 + 6;
+const CY = 285;
 const RX = 385;
-const RY = 235;
+const RY = 218;
 const STEP_MS = 2200;
 const LIFE_MS = 4200;
 const PACKET_MS = 1300;

@@ -30,7 +30,23 @@ export function useBoard(intervalMs = 20_000): { feed: BoardFeed; live: boolean 
 
 /** Re-render every `ms` so relative times / minute counters stay fresh. */
 export function useNow(ms = 1000): number {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => { const id = setInterval(() => setNow(Date.now()), ms); return () => clearInterval(id); }, [ms]);
+  const [now, setNow] = useState(0); // 0 until mounted (avoids SSR/client hydration mismatch)
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), ms);
+    return () => clearInterval(id);
+  }, [ms]);
   return now;
+}
+
+/** Window height in px (0 before mount). */
+export function useViewportHeight(): number {
+  const [h, setH] = useState(0);
+  useEffect(() => {
+    const on = () => setH(window.innerHeight);
+    on();
+    window.addEventListener("resize", on);
+    return () => window.removeEventListener("resize", on);
+  }, []);
+  return h;
 }

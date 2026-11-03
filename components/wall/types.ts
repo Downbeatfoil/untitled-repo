@@ -76,7 +76,8 @@ export function laneColor(lane: string): string {
   return [...LANES, ORCH].find((l) => l.id === lane)?.color ?? "#8a96aa";
 }
 
-export function ago(iso: string, now = Date.now()): string {
+export function ago(iso: string, now = 0): string {
+  if (!now) return "";
   const s = Math.max(0, (now - new Date(iso).getTime()) / 1000);
   if (!Number.isFinite(s)) return "";
   if (s < 60) return `${Math.floor(s)}s ago`;

@@ -10,7 +10,7 @@ import { FearGauge } from "@/components/viz";
 import BoardTicker from "./BoardTicker";
 import SwarmCounter from "./SwarmCounter";
 import type { WallCourse } from "./types";
-import { useBoard, useNow } from "./useBoard";
+import { useBoard, useNow, useViewportHeight } from "./useBoard";
 
 const ROTATE_MS = 12_000;
 const TICK_MS = 100;
@@ -19,6 +19,8 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
   const list = courses.length ? courses : [];
   const { feed, live } = useBoard();
   const now = useNow(30_000);
+  const vh = useViewportHeight();
+  const gaugeSize = Math.round(Math.max(210, Math.min(400, (vh || 800) * 0.25)));
   const [idx, setIdx] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -57,7 +59,7 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
   }, [go, fullscreen]);
 
   const c = list[idx];
-  const clock = new Date(now).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const clock = now ? new Date(now).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
 
   return (
     <div className="flex h-full flex-col gap-4 p-5 lg:p-7">
@@ -84,17 +86,17 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
 
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(340px,28%)]">
         <div className="flex min-h-0 flex-col gap-4">
-          <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-panel/70 p-6 lg:p-8">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 opacity-30" style={{ background: "linear-gradient(180deg, rgba(61,139,255,.35), transparent)", animation: "wl-scan 7s linear infinite" }} />
+          <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-panel/70 p-5 lg:p-6">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 opacity-15" style={{ background: "linear-gradient(180deg, rgba(61,139,255,.35), transparent)", animation: "wl-scan 7s linear infinite" }} />
             {c ? (
-              <div key={c.code} className="relative grid min-h-0 flex-1 gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]" style={{ animation: "wl-in .7s ease-out" }}>
+              <div key={c.code} className="relative grid min-h-0 flex-1 gap-5 overflow-hidden xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]" style={{ animation: "wl-in .7s ease-out" }}>
                 <div className="flex min-w-0 flex-col">
                   <div className="text-xs font-bold uppercase tracking-[0.35em] text-gold">Most feared · {idx + 1} of {list.length}</div>
-                  <h1 className="mt-2 text-[clamp(2.5rem,5.5vw,6rem)] font-black leading-none tracking-tight text-goldb">{c.code}</h1>
-                  <div className="mt-2 text-[clamp(1.1rem,2vw,2rem)] font-semibold text-foreground/90">{c.title}</div>
-                  <p className="mt-3 line-clamp-3 max-w-xl text-[clamp(.9rem,1.2vw,1.2rem)] leading-snug text-muted">{c.summary}</p>
+                  <h1 className="mt-2 text-[clamp(2.2rem,min(5.5vw,9vh),6rem)] font-black leading-none tracking-tight text-goldb">{c.code}</h1>
+                  <div className="mt-2 text-[clamp(1rem,min(2vw,3.4vh),2rem)] font-semibold text-foreground/90">{c.title}</div>
+                  <p className="mt-2 line-clamp-2 max-w-xl text-[clamp(.85rem,1.1vw,1.15rem)] leading-snug text-muted">{c.summary}</p>
                   <div className="mt-auto flex items-end justify-between gap-4 pt-4">
-                    <FearGauge score={c.fearScore} size={380} caption="Fear score" />
+                    <FearGauge score={c.fearScore} size={gaugeSize} caption="Fear score" />
                     <div className="space-y-2 pb-4 text-right text-sm text-muted">
                       <div><span className="text-2xl font-extrabold tabular-nums text-electric">{c.conceptCount}</span> concepts</div>
                       <div><span className="text-2xl font-extrabold tabular-nums text-good">{c.sourceCount}</span> cited sources</div>
@@ -103,19 +105,19 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
                   </div>
                 </div>
 
-                <div className="flex min-w-0 flex-col gap-4">
-                  <section className="rounded-xl border border-bad/40 bg-bad/5 p-5">
+                <div className="flex min-h-0 min-w-0 flex-col gap-3">
+                  <section className="rounded-xl border border-bad/40 bg-bad/5 p-4">
                     <div className="flex items-baseline justify-between">
                       <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-bad">Hardest concept</h3>
                       <span className="text-2xl font-extrabold tabular-nums text-bad">{Math.round(c.hardest.score * 100)}%</span>
                     </div>
-                    <div className="mt-1 text-[clamp(1.4rem,2.6vw,2.8rem)] font-extrabold leading-tight">{c.hardest.label}</div>
+                    <div className="mt-1 text-[clamp(1.3rem,min(2.6vw,4.4vh),2.8rem)] font-extrabold leading-tight">{c.hardest.label}</div>
                     <p className="mt-1 line-clamp-2 text-[clamp(.85rem,1.1vw,1.1rem)] text-muted">{c.hardest.description}</p>
                   </section>
 
-                  <section className="rounded-xl border border-line bg-panel2/70 p-5">
+                  <section className="rounded-xl border border-line bg-panel2/70 p-4">
                     <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-gold">What&apos;s on the exam</h3>
-                    <div className="mt-3 space-y-2.5">
+                    <div className="mt-3 space-y-[1.2vh]">
                       {c.topics.map((t, i) => (
                         <div key={t.label} className="flex items-center gap-3">
                           <div className="w-[38%] truncate text-[clamp(.85rem,1.1vw,1.1rem)] font-semibold">{t.label}</div>
@@ -129,10 +131,10 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
                   </section>
 
                   {c.quote && (
-                    <section className="relative flex-1 rounded-xl border border-electric/30 bg-electric/5 p-5">
-                      <div className="absolute -top-1 left-4 text-6xl font-black leading-none text-electric/40">“</div>
+                    <section className="relative min-h-0 flex-1 overflow-hidden rounded-xl border border-electric/30 bg-electric/5 p-4">
+                      <div className="absolute right-4 top-0 text-7xl font-black leading-none text-electric/30">“</div>
                       <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-electric">Students say</h3>
-                      <p className="mt-2 line-clamp-4 text-[clamp(1rem,1.5vw,1.5rem)] font-medium italic leading-snug">{c.quote.text}</p>
+                      <p className="mt-2 line-clamp-3 text-[clamp(.95rem,min(1.4vw,2.4vh),1.5rem)] font-medium italic leading-snug">{c.quote.text}</p>
                       <div className="mt-2 text-xs uppercase tracking-widest text-dim">via {c.quote.from}</div>
                     </section>
                   )}
