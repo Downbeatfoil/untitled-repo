@@ -253,7 +253,9 @@ export interface BoardStats {
 /** GET /api/health */
 export interface HealthResponse {
   ok: true;
-  grokConfigured: boolean;
+  grokConfigured: boolean; // true if ANY live model is configured (xAI or Gemini)
+  /** Which live model powers the app right now. "none" = seeded demo data. */
+  provider?: "grok" | "gemini" | "none";
 }
 
 /** POST /api/ai : generic "ask Grok" (kept from starter). */
