@@ -8,3 +8,9 @@
 - [x] P1 `Tabs.tsx`, `Skeleton.tsx`, `Badge.tsx`, `Button.tsx`, `ExportButton.tsx` (downloads `exportUrl(code,'smartpath')`).
 - [x] P2 `QuoteCard.tsx`, `TipList.tsx`, `SourceList.tsx` (grouped by kind).
 - [x] P2 Keyboard + focus states, `aria-live` on scout feed.
+- [x] P1 (orchestrator 01:10) `GrokStatusPill.tsx`: 'Live Grok' green vs 'Demo data' amber from `pack.mocked` / `mocked` prop.
+- [x] P1 `ShareCard.tsx`: fear score + hardest topic + Copy via `shareText` from `@/lib/export`.
+- [x] P1 `CompareCourses.tsx` `{a,b: CoursePack}`: side-by-side fear / difficulty / top exam topics.
+- [x] P1 `Toast.tsx` + `useToast`.
+- [x] P1 `Confetti.tsx` burst on PracticeExam finish when score >= 70%.
+- [x] P1 `CommandK.tsx` quick-switcher to scout any course ('/' focuses search).

@@ -53,6 +53,7 @@ export default function CourseSearch({
             disabled={disabled}
             autoFocus={autoFocus}
             aria-label="Course code"
+            data-course-search
             aria-invalid={touched && !valid && !!value}
             autoComplete="off"
             spellCheck={false}

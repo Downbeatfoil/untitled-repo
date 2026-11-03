@@ -8,6 +8,7 @@ import { postExam, postGrade } from "@/lib/api-client";
 import type { Concept, GradeResponse, PracticeExam as PracticeExamData, Question } from "@/shared/contract";
 import Badge from "./Badge";
 import Button from "./Button";
+import Confetti from "./Confetti";
 import Fx from "./Fx";
 import Skeleton from "./Skeleton";
 
@@ -108,6 +109,7 @@ export default function PracticeExam({ courseCode, concepts = [], count, concept
     return (
       <div className="sp-fly-in space-y-6">
         <Fx />
+        <Confetti active={pct >= 70} />
         <div className="rounded-2xl border border-[#B3A369]/40 bg-gradient-to-b from-[#B3A369]/10 to-transparent p-6 text-center">
           <p className="text-xs uppercase tracking-widest text-[#B3A369]">Final score</p>
           <p className="mt-1 text-6xl font-extrabold tabular-nums text-white">
