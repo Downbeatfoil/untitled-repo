@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { trackErrors, expectNoBlankScreen } from "./helpers";
 
-for (const path of ["/", "/course/cs-1332", "/built-by-agents"]) {
+for (const path of ["/", "/course/cs-1332", "/built-by-agents", "/about", "/roast", "/versus", "/wall"]) {
   test(`smoke ${path} renders without errors`, async ({ page }) => {
     const errors = trackErrors(page);
     const res = await page.goto(path);
