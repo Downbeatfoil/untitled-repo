@@ -48,7 +48,8 @@ export async function draftOutreach(
   tone: OutreachTone = "friendly",
 ): Promise<OutreachDraft> {
   const prof = resolveProfessor(pack, professor);
-  const student = toStr(studentName, "A Georgia Tech student");
+  const named = toStr(studentName);
+  const student = named || "A GT student"; // sign-off only; prose below says "a Georgia Tech student"
   try {
     const topics = (pack.concepts ?? []).slice(0, 4).map((c) => c.label).join(", ");
     const prompt = [
@@ -69,9 +70,14 @@ export async function draftOutreach(
     console.warn("[ai-tools] draftOutreach failed:", (err as Error)?.message);
   }
   try {
-    const m = mockOutreach(pack, { name: prof.name, email: prof.email }, student);
-    const body =
-      tone === "formal" ? m.body : m.body.replace(/^Dear /, "Hi ").replace(/\nSincerely,/, "\nBest,");
+    const m = mockOutreach(pack, { name: prof.name, email: prof.email }, named || "a Georgia Tech student", tone);
+    let body = m.body;
+    if (!named) {
+      // No name given: keep the prose grammatical and sign off generically.
+      body = body
+        .replace(/My name is a Georgia Tech student, and I am currently/, "I am currently")
+        .replace(/\n(Respectfully|Best|Sincerely|Thank you),\na Georgia Tech student(\n[^\n]*)?$/, "\n$1,\nA GT student");
+    }
     return finish({ subject: m.subject, body, mocked: true }, prof.email);
   } catch {
     const subject = `Past exams for ${pack.course.code} and SmartPath`;
