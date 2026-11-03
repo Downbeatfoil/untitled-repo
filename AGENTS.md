@@ -22,6 +22,9 @@ Your prompt names your **lane**. `lanes.conf` lists the paths each lane owns.
 | ai | `lib/ai/` (all Grok calls and prompts) | @vibhorguptagt / @v-gupta5044 |
 | data | `lib/data/` (seed packs, mocks, cache) | @vibhorguptagt / @v-gupta5044 |
 | qa-api | `tests/api/` | @vibhorguptagt / @v-gupta5044 |
+| ai-tools | `lib/ai-tools/` (Grok exam, grading, plan, outreach, chat) | @Downbeatfoil |
+| lab | `app/(lab)/`, `components/lab/` (Schedule Roast, Course Cage Match) | @Downbeatfoil |
+| wall | `app/(wall)/`, `components/wall/` (TV wall, live agent swarm) | @Downbeatfoil |
 | orchestrator | `shared/`, `lib/api-client.ts`, docs, config, scripts, `package.json` | Claude |
 
 Every lane also owns its own task list: `tasks/<lane>.md`.
