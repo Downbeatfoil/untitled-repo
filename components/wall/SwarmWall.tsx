@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import BoardTicker from "./BoardTicker";
 import SwarmCounter from "./SwarmCounter";
+import QRPanel from "./QRPanel";
 import SwarmGraph from "./SwarmGraph";
 import { useBoard } from "./useBoard";
 
@@ -45,7 +46,7 @@ export default function SwarmWall() {
           <div className="min-h-0 flex-1 overflow-hidden rounded-2xl border border-line bg-panel/60"><SwarmGraph feed={feed} className="h-full w-full" /></div>
           <SwarmCounter feed={feed} />
         </div>
-        <aside className="min-h-0"><BoardTicker feed={feed} live={live} max={8} /></aside>
+        <aside className="flex min-h-0 flex-col gap-4"><div className="min-h-0 flex-1"><BoardTicker feed={feed} live={live} max={8} /></div><QRPanel /></aside>
       </div>
     </div>
   );

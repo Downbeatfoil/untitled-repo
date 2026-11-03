@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FearGauge } from "@/components/viz";
 import BoardTicker from "./BoardTicker";
 import SwarmCounter from "./SwarmCounter";
+import QRPanel from "./QRPanel";
 import type { WallCourse } from "./types";
 import { useBoard, useNow, useViewportHeight } from "./useBoard";
 
@@ -159,7 +160,7 @@ export default function TVWall({ courses }: { courses: WallCourse[] }) {
           <SwarmCounter feed={feed} />
         </div>
 
-        <aside className="min-h-0"><BoardTicker feed={feed} live={live} max={8} /></aside>
+        <aside className="flex min-h-0 flex-col gap-4"><div className="min-h-0 flex-1"><BoardTicker feed={feed} live={live} max={8} /></div><QRPanel /></aside>
       </div>
 
       {toast && <div className="pointer-events-none fixed bottom-8 left-1/2 -translate-x-1/2 rounded-full border border-line2 bg-panel2 px-5 py-2 text-lg font-semibold shadow-2xl">{toast}</div>}

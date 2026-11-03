@@ -4,4 +4,4 @@
 - [x] P1 `SwarmCounter`: giant animated counters "agents · board posts · commits · minutes", refresh 20 s.
 - [x] P1 `/wall/swarm`: live visualization of the 12 agent lanes as nodes; a node pulses when its lane posts; edges light up on `TO:` handoffs. This is the "how it was built" wow moment.
 - [x] P2 Keyboard: space = pause rotation, arrows = next/prev, f = fullscreen.
-- [ ] P2 QR code panel linking to the deployed app/repo (pure SVG, no deps).
+- [x] P2 QR code panel linking to the deployed app/repo (pure SVG, no deps).
