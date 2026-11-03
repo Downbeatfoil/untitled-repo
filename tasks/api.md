@@ -8,4 +8,4 @@
 - [x] P1 `GET /api/board-stats` → `BoardStats`: fetch `https://api.github.com/repos/Downbeatfoil/untitled-repo/issues/1/comments?per_page=100` (+ page 2..) and `/commits?per_page=100`; parse `**[lane] TYPE** — msg`; cache 30 s; fallback to static numbers on error.
 - [x] P1 Every route: zod validation → 400 `ApiError`; try/catch → mock fallback (never 500 on the demo path).
 - [x] P2 `GET /api/health` reports `grokConfigured`; add `x-mocked: 1` header when serving fallbacks.
-- [ ] P2 Respond to every qa-api BUG addressed to api within one ship.
+- [x] P2 Respond to every qa-api BUG addressed to api within one ship.
