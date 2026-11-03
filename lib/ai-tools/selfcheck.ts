@@ -5,7 +5,7 @@
  */
 import type { CoursePack, Question } from "@/shared/contract";
 import { cs1332Pack, math1554Pack } from "@/lib/data";
-import { generateExam, gradeAnswer, generatePlan, courseChat, draftOutreach, roastSchedule } from "./index";
+import { generateExam, gradeAnswer, generatePlan, courseChat, draftOutreach, roastSchedule, cageMatch } from "./index";
 
 interface Row { name: string; ok: boolean; mocked?: boolean; ms: number; note: string }
 const rows: Row[] = [];
@@ -107,19 +107,43 @@ async function main() {
     return { ok, mocked: r.mocked, note: `odds ${r.survivalOdds}, ${r.perCourse.length} lines` };
   });
 
-  // cageMatch is owned by another agent; check it only once versus.ts exists.
   await check("cageMatch(1332, 1554)", async () => {
-    const mod = "./versus";
-    let m: { cageMatch?: (a: CoursePack, b: CoursePack) => Promise<{ rounds: { winner: string }[]; champion: string; mocked: boolean }> };
-    try {
-      m = await import(mod);
-    } catch {
-      return { ok: true, note: "SKIPPED (versus.ts not on main yet)" };
-    }
-    if (!m.cageMatch) return { ok: true, note: "SKIPPED (no cageMatch export yet)" };
-    const r = await m.cageMatch(pack, math1554Pack);
+    const r = await cageMatch(pack, math1554Pack);
     const codes = new Set([pack.course.code, math1554Pack.course.code]);
     return { ok: r.rounds.length >= 1 && r.rounds.every((x) => codes.has(x.winner)) && codes.has(r.champion), mocked: r.mocked, note: `${r.rounds.length} rounds, champion ${r.champion}` };
+  });
+
+  // ---- edge cases: none of these may throw ----
+  const empty = { ...pack, concepts: [], examTopics: [], difficulty: [], sources: [], studentQuotes: [], professors: [], tips: [] } as CoursePack;
+  await check("edge: generateExam(empty pack)", async () => {
+    const e = await generateExam(empty, 6);
+    return { ok: Array.isArray(e.questions), mocked: e.mocked, note: `${e.questions.length} questions` };
+  });
+  await check("edge: generateExam(count=0 / NaN / 99)", async () => {
+    const out = await Promise.all([generateExam(pack, 0), generateExam(pack, NaN), generateExam(pack, 99)]);
+    return { ok: out.every((e) => e.questions.length >= 1 && e.questions.length <= 12), mocked: out[0].mocked, note: out.map((e) => e.questions.length).join("/") };
+  });
+  await check("edge: generatePlan(empty pack)", async () => {
+    const p = await generatePlan(empty, "2099-01-01", 2);
+    return { ok: Array.isArray(p.days) && p.days.length >= 1, mocked: p.mocked, note: `${p.days.length} days` };
+  });
+  await check("edge: generatePlan(hours 0 / -5 / NaN)", async () => {
+    const out = await Promise.all([generatePlan(pack, "2099-01-01", 0), generatePlan(pack, "2099-01-01", -5), generatePlan(pack, "2099-01-01", NaN)]);
+    return { ok: out.every((p) => p.days.every((d) => d.minutes >= 15 && d.minutes <= 720)), mocked: out[0].mocked, note: "minutes clamped 15..720" };
+  });
+  await check("edge: draftOutreach(empty pack, no professor)", async () => {
+    const o = await draftOutreach(empty);
+    return { ok: o.mailto.startsWith("mailto:") && !!o.body, mocked: o.mocked, note: `to=${o.to ?? "(none)"}` };
+  });
+  await check("edge: courseChat(empty pack / assistant-only msgs)", async () => {
+    const a = await courseChat(empty, [{ role: "user", content: "what is on the exam?" }]);
+    const b = await courseChat(pack, [{ role: "assistant", content: "hi" }]);
+    return { ok: !!a.reply && !!b.reply, mocked: a.mocked, note: "replies produced" };
+  });
+  await check("edge: roastSchedule([]) / cageMatch(same, same)", async () => {
+    const r = await roastSchedule([]);
+    const c = await cageMatch(pack, pack);
+    return { ok: !!r.verdict && c.rounds.length >= 1, mocked: r.mocked, note: `odds ${r.survivalOdds}` };
   });
 
   const w = Math.max(...rows.map((r) => r.name.length));
