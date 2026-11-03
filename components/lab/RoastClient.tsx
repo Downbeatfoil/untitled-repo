@@ -154,7 +154,7 @@ function Result({ r, onCopy, refEl }: { r: RoastResult; onCopy: () => void; refE
             </div>
             <p className="eyebrow mt-6">Grok&apos;s verdict</p>
             <p className={`mt-2 min-h-[5.5rem] text-xl font-semibold leading-snug text-white sm:text-2xl ${done ? "" : "lab-caret"}`}>“{out}{done ? "”" : ""}</p>
-            {r.mocked && <p className="mt-2 text-[11px] uppercase tracking-widest text-[#5b6679]">Demo roast · seed data (no live Grok call)</p>}
+            {r.mocked && <p className="mt-2 text-[11px] uppercase tracking-widest text-[#5b6679]">Demo roast · seed data (no live AI call)</p>}
           </div>
         </div>
       </section>

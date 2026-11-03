@@ -4,5 +4,5 @@ Data: `getPack`/`getCourses` from `@/lib/api-client`. Grok calls: import `roastS
 - [x] P0 `app/(lab)/lab-api/roast/route.ts` POST {codes: string[]} → roast result (uses getPack data from lib/data + roastSchedule; mock fallback).
 - [x] P1 `/versus` **Course Cage Match**: two course pickers → animated round-by-round battle (Grok commentary, round winners, health bars) → champion banner. Route `app/(lab)/lab-api/versus/route.ts`.
 - [x] P1 Share buttons on both (copy text).
-- [ ] P2 Sound-free micro-animations, mobile layout.
+- [x] P2 Sound-free micro-animations, mobile layout.
 - [x] P2 Ask `pages` (board ASK) to add nav links to /roast and /versus.
