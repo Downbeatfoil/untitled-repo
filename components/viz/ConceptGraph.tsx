@@ -212,6 +212,11 @@ export default function ConceptGraph({
     return { nodes: out, flowEdges: fe };
   }, [concepts, edges, freq, diff, byId, selectedId, neighbors, hlSet, stepNumbers]);
 
+  const fitOpts = useMemo(
+    () => (hlSet ? { padding: 0.25, nodes: [...hlSet].map((id) => ({ id })) } : { padding: 0.18 }),
+    [hlSet],
+  );
+
   const select = useCallback(
     (id: string | null) => {
       setSelectedId(id);
@@ -242,7 +247,7 @@ export default function ConceptGraph({
         nodeTypes={nodeTypes}
         colorMode="dark"
         fitView
-        fitViewOptions={{ padding: 0.18 }}
+        fitViewOptions={fitOpts}
         minZoom={0.25}
         maxZoom={1.8}
         nodesConnectable={false}
