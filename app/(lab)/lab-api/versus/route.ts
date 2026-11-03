@@ -17,14 +17,15 @@ function enrich(g: { rounds: { title: string; winner: string; commentary: string
   const valid = new Set([base.a.code, base.b.code]);
   const rounds: VersusRound[] = g.rounds.filter((r) => valid.has(r.winner)).slice(0, 6).map((r) => {
     const k = KEYS.find(([re]) => re.test(r.title));
-    const m = k ? base.rounds[k[1]] : undefined;
+    const m0 = k ? base.rounds[k[1]] : undefined;
+    const m = m0 && m0.winner === r.winner ? m0 : undefined; // only show stats that agree with the stated winner
     return {
       title: r.title.replace(/^\s*round\s*\d+\s*[:.\-–]\s*/i, "").trim() || "Showdown",
       emoji: k ? k[2] : "🥊",
       winner: r.winner,
       commentary: r.commentary,
       aStat: m?.aStat ?? "", bStat: m?.bStat ?? "",
-      damage: m && m.winner === r.winner ? m.damage : 16 + (hash(r.title + r.winner) % 12),
+      damage: m ? m.damage : 16 + (hash(r.title + r.winner) % 12),
     };
   });
   if (rounds.length < 2) return base;
