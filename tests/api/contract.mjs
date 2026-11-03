@@ -139,3 +139,48 @@ export function assertGradeResponse(grade, prefix = "grade") {
   assert.equal(typeof grade.feedback, "string", `${prefix}.feedback must be string`);
   assert.equal(typeof grade.mocked, "boolean", `${prefix}.mocked must be boolean`);
 }
+
+export function assertPlanDay(day, prefix = "day") {
+  assert.ok(day && typeof day === "object", `${prefix} must be an object`);
+  assert.equal(typeof day.date, "string", `${prefix}.date must be string`);
+  assert.ok(Array.isArray(day.conceptIds), `${prefix}.conceptIds must be array`);
+  assert.ok(Array.isArray(day.tasks), `${prefix}.tasks must be array`);
+  assert.equal(typeof day.minutes, "number", `${prefix}.minutes must be number`);
+}
+
+export function assertStudyPlan(plan, prefix = "plan") {
+  assert.ok(plan && typeof plan === "object", `${prefix} must be an object`);
+  assert.equal(typeof plan.courseCode, "string", `${prefix}.courseCode must be string`);
+  assert.ok(Array.isArray(plan.days), `${prefix}.days must be array`);
+  plan.days.forEach((d, i) => assertPlanDay(d, `${prefix}.days[${i}]`));
+  assert.equal(typeof plan.mocked, "boolean", `${prefix}.mocked must be boolean`);
+}
+
+export function assertOutreachDraft(draft, prefix = "draft") {
+  assert.ok(draft && typeof draft === "object", `${prefix} must be an object`);
+  if (draft.to !== undefined) {
+    assert.equal(typeof draft.to, "string", `${prefix}.to must be string`);
+  }
+  assert.equal(typeof draft.subject, "string", `${prefix}.subject must be string`);
+  assert.equal(typeof draft.body, "string", `${prefix}.body must be string`);
+  assert.equal(typeof draft.mailto, "string", `${prefix}.mailto must be string`);
+  assert.ok(draft.mailto.startsWith("mailto:"), `${prefix}.mailto must start with "mailto:"`);
+  assert.equal(typeof draft.mocked, "boolean", `${prefix}.mocked must be boolean`);
+}
+
+export function assertChatResponse(chat, prefix = "chat") {
+  assert.ok(chat && typeof chat === "object", `${prefix} must be an object`);
+  assert.equal(typeof chat.reply, "string", `${prefix}.reply must be string`);
+  assert.ok(chat.reply.length > 0, `${prefix}.reply must not be empty`);
+  assert.ok(Array.isArray(chat.citedSourceIds), `${prefix}.citedSourceIds must be array`);
+  assert.equal(typeof chat.mocked, "boolean", `${prefix}.mocked must be boolean`);
+}
+
+export function assertSmartPathExport(exp, prefix = "export") {
+  assert.ok(exp && typeof exp === "object", `${prefix} must be an object`);
+  assert.equal(exp.version, 1, `${prefix}.version must be 1`);
+  assert.equal(typeof exp.course, "string", `${prefix}.course must be string`);
+  assert.ok(Array.isArray(exp.nodes), `${prefix}.nodes must be array`);
+  assert.ok(Array.isArray(exp.edges), `${prefix}.edges must be array`);
+  assert.ok(Array.isArray(exp.quizzes), `${prefix}.quizzes must be array`);
+}
