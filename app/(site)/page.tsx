@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { CourseSummary } from "@/shared/contract";
-import { courseSlug, normalizeCourseCode } from "@/shared/contract";
-import { FearGauge, Skeleton, fearColor } from "./_components/ui";
+import { courseSlug } from "@/shared/contract";
+import CourseCard from "@/components/core/CourseCard";
+import CourseSearch from "@/components/core/CourseSearch";
+import { Skeleton } from "./_components/ui";
 import { loadCourses } from "./_lib/data";
-import { EXAMPLE_CODES } from "./_lib/seed";
 
 const STEPS = [
   { n: "01", icon: "🔎", title: "Name your class", body: "Type any Georgia Tech course code. No uploads, no accounts." },
@@ -17,7 +18,6 @@ const STEPS = [
 
 export default function Home() {
   const router = useRouter();
-  const [q, setQ] = useState("");
   const [courses, setCourses] = useState<CourseSummary[] | null>(null);
 
   useEffect(() => {
@@ -27,15 +27,9 @@ export default function Home() {
   }, []);
 
   const sorted = useMemo(() => (courses ? [...courses].sort((a, b) => b.fearScore - a.fearScore) : null), [courses]);
-  const normalized = q.trim() ? normalizeCourseCode(q) : "";
-  const valid = /^[A-Z]{2,4} \d{4}[A-Z]?$/.test(normalized);
 
   function go(code: string) {
     router.push(`/scout/${courseSlug(code)}`);
-  }
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (valid) go(normalized);
   }
 
   return (
@@ -56,33 +50,8 @@ export default function Home() {
             student chatter, then builds your SmartPath study path in about 60 seconds.
           </p>
 
-          <form onSubmit={submit} className="anim-up delay-3 mx-auto mt-9 max-w-2xl">
-            <div className="card flex flex-col gap-2 p-2 shadow-[0_20px_80px_-20px_rgba(61,139,255,0.35)] sm:flex-row sm:items-center">
-              <div className="flex flex-1 items-center gap-3 px-3">
-                <span className="mono text-lg text-gold">&gt;_</span>
-                <input
-                  autoFocus
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="CS 1332, math1554, phys-2211…"
-                  aria-label="Course code"
-                  className="w-full bg-transparent py-3 text-lg text-foreground outline-none placeholder:text-dim"
-                />
-              </div>
-              <button type="submit" disabled={!valid} className="btn btn-gold px-6 py-3.5 text-base">
-                Scout it →
-              </button>
-            </div>
-            <div className="mt-2 h-5 text-left text-xs text-dim">
-              {q && (valid ? <span className="text-good">Ready: {normalized}</span> : <span>Try a code like “CS 1332”</span>)}
-            </div>
-          </form>
-
-          <div className="anim-up delay-4 mt-3 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs uppercase tracking-widest text-dim">Try</span>
-            {EXAMPLE_CODES.map((c) => (
-              <button key={c} className="chip" onClick={() => go(c)}>{c}</button>
-            ))}
+          <div className="anim-up delay-3 mx-auto mt-9 flex max-w-2xl justify-center text-left">
+            <CourseSearch onSubmit={go} autoFocus buttonLabel="Scout it" placeholder="CS 1332, math1554, phys-2211…" />
           </div>
         </div>
       </section>
@@ -99,22 +68,7 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {sorted
             ? sorted.map((c, i) => (
-                <Link key={c.code} href={`/course/${courseSlug(c.code)}`} className={`card card-hover anim-up block p-5`} style={{ animationDelay: `${i * 70}ms` }}>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="mono text-sm font-semibold text-goldb">{c.code}</div>
-                      <div className="mt-1 text-lg font-semibold leading-snug">{c.title}</div>
-                    </div>
-                    <FearGauge score={c.fearScore} size={104} />
-                  </div>
-                  <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-xs text-muted">
-                    <span>🔥 Hardest: <span className="text-foreground">{c.topConcept}</span></span>
-                    <span className="mono">{c.conceptCount} concepts · {c.sourceCount} sources</span>
-                  </div>
-                  <div className="mt-3 h-1 overflow-hidden rounded-full bg-line">
-                    <div className="h-full rounded-full" style={{ width: `${c.fearScore}%`, background: fearColor(c.fearScore) }} />
-                  </div>
-                </Link>
+                <div key={c.code} className="anim-up" style={{ animationDelay: `${i * 70}ms` }}><CourseCard course={c} href={`/course/${courseSlug(c.code)}`} /></div>
               ))
             : Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-44" />)}
         </div>

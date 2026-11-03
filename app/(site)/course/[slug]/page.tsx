@@ -3,12 +3,19 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { exportUrl } from "@/lib/api-client";
 import type { CoursePack } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
-import { ChatTab, ExamTab, OutreachTab, PlanTab } from "../../_components/tabs";
-import { ErrorBox, FearGauge, KindBadge, Skeleton } from "../../_components/ui";
-import { ConceptGraph, DifficultyHeatmap, ExamTopicsChart } from "../../_components/viz";
+import { ConceptGraph, ExamTopicsChart, FearGauge } from "@/components/viz";
+import CourseChat from "@/components/core/CourseChat";
+import ExportButton from "@/components/core/ExportButton";
+import OutreachComposer from "@/components/core/OutreachComposer";
+import PracticeExam from "@/components/core/PracticeExam";
+import QuoteCard from "@/components/core/QuoteCard";
+import SourceList from "@/components/core/SourceList";
+import StudyPlanner from "@/components/core/StudyPlanner";
+import TipList from "@/components/core/TipList";
+import { ErrorBox, Skeleton } from "../../_components/ui";
+import { DifficultyHeatmap } from "../../_components/viz";
 import { loadPack } from "../../_lib/data";
 
 const TABS = ["Overview", "Practice Exam", "Study Plan", "Professor Outreach", "Ask the Course"] as const;
@@ -62,13 +69,12 @@ export default function CoursePage() {
             <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">{pack.course.title}</div>
             <p className="mt-3 text-[15px] leading-relaxed text-muted">{pack.summary}</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <a className="btn btn-gold" href={exportUrl(pack.course.code, "smartpath")} download>⬇ Export to SmartPath</a>
+              <ExportButton courseCode={pack.course.code} variant="primary" />
               <Link className="btn btn-ghost" href={`/scout/${slug}`}>↻ Re-scout</Link>
             </div>
           </div>
           <div className="flex flex-col items-center self-center">
-            <FearGauge score={pack.fearScore} size={230} />
-            <div className="mt-2 text-xs uppercase tracking-[0.18em] text-dim">Fear score</div>
+            <FearGauge score={pack.fearScore} size={240} />
           </div>
         </div>
       </div>
@@ -82,44 +88,25 @@ export default function CoursePage() {
         <div className="anim-up">
           {tab === "Overview" && (
             <div className="space-y-6">
-              <Section title="Concept graph" sub="Click a node. Size = how often it shows up on exams; color = how hard students find it."><ConceptGraph pack={pack} /></Section>
+              <Section title="Concept graph" sub="Click a node. Size = how often it shows up on exams; color = how hard students find it."><ConceptGraph concepts={pack.concepts} edges={pack.edges} examTopics={pack.examTopics} difficulty={pack.difficulty} sources={pack.sources} /></Section>
               <div className="grid gap-6 lg:grid-cols-2">
-                <Section title="What's on the exam" sub="Share of past exams touching each topic"><ExamTopicsChart pack={pack} /></Section>
+                <Section title="What's on the exam" sub="Share of past exams touching each topic"><ExamTopicsChart examTopics={pack.examTopics} concepts={pack.concepts} difficulty={pack.difficulty} /></Section>
                 <Section title="Student voices" sub="From Reddit, X and public forums">
-                  <div className="space-y-3">
-                    {pack.studentQuotes.map((q, i) => {
-                      const c = q.sentiment === "positive" ? "#3ddc97" : q.sentiment === "negative" ? "#ff5d6c" : "#8a96aa";
-                      const s = pack.sources.find((x) => x.id === q.sourceId);
-                      return (
-                        <blockquote key={i} className="rounded-lg border-l-2 bg-[rgba(255,255,255,0.025)] px-4 py-3" style={{ borderColor: c }}>
-                          <p className="text-sm leading-relaxed">{q.text}</p>
-                          {s && <a href={s.url} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs text-dim hover:text-goldb">— {s.title}</a>}
-                        </blockquote>
-                      );
-                    })}
-                  </div>
+                  <div className="space-y-3">{pack.studentQuotes.map((q, i) => <QuoteCard key={i} quote={q} sources={pack.sources} />)}</div>
                 </Section>
               </div>
               <Section title="Difficulty heatmap" sub="Hardest concepts first"><DifficultyHeatmap pack={pack} /></Section>
               <div className="grid gap-6 lg:grid-cols-2">
-                <Section title="Study tips">
-                  <ol className="space-y-3">{pack.tips.map((t, i) => <li key={i} className="flex gap-3 text-sm text-muted"><span className="mono flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[rgba(179,163,105,0.14)] text-xs font-bold text-goldb">{i + 1}</span>{t}</li>)}</ol>
-                </Section>
-                <Section title={`Sources (${pack.sources.length})`} sub="Every claim traces back to something public">
-                  <ul className="space-y-2.5">{pack.sources.map((s, i) => (
-                    <li key={s.id}><a href={s.url} target="_blank" rel="noreferrer" className="block rounded-lg border border-line p-3 transition-colors hover:border-gold">
-                      <div className="flex items-center gap-2"><span className="mono text-xs text-dim">[{i + 1}]</span><KindBadge kind={s.kind} /></div>
-                      <div className="mt-1 text-sm font-semibold">{s.title}</div><div className="text-xs text-muted">{s.snippet}</div></a></li>
-                  ))}</ul>
-                </Section>
+                <TipList tips={pack.tips} />
+                <SourceList sources={pack.sources} />
               </div>
               <p className="text-center text-xs text-dim">Hardest concept: <b className="text-muted">{nameOf.get([...pack.difficulty].sort((a, b) => b.score - a.score)[0]?.conceptId ?? "") ?? "—"}</b> · generated {new Date(pack.generatedAt).toLocaleString()}</p>
             </div>
           )}
-          {tab === "Practice Exam" && <ExamTab pack={pack} />}
-          {tab === "Study Plan" && <PlanTab pack={pack} />}
-          {tab === "Professor Outreach" && <OutreachTab pack={pack} />}
-          {tab === "Ask the Course" && <ChatTab pack={pack} />}
+          {tab === "Practice Exam" && <PracticeExam courseCode={pack.course.code} concepts={pack.concepts} />}
+          {tab === "Study Plan" && <StudyPlanner courseCode={pack.course.code} concepts={pack.concepts} />}
+          {tab === "Professor Outreach" && <OutreachComposer courseCode={pack.course.code} professors={pack.professors} />}
+          {tab === "Ask the Course" && <CourseChat courseCode={pack.course.code} sources={pack.sources} />}
         </div>
       </div>
     </main>
