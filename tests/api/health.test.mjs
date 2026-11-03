@@ -8,4 +8,7 @@ test("GET /api/health returns ok:true and grokConfigured boolean", async () => {
   const data = await res.json();
   assert.equal(data.ok, true, "health ok should be true");
   assert.equal(typeof data.grokConfigured, "boolean", "grokConfigured should be boolean");
+  if (data.provider !== undefined) {
+    assert.ok(["grok", "gemini", "none"].includes(data.provider), `Invalid provider: ${data.provider}`);
+  }
 });
