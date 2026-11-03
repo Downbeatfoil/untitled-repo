@@ -9,3 +9,6 @@
 - [x] P1 `lib/data/cache.ts`: in-memory `Map` cache of live packs: `savePack`, `getCachedPack`; `getPack(code)` = cache → seed → null.
 - [x] P2 `examQuestions` bank per seed (6–10 handwritten questions in real-exam style) used by `mockExam`.
 - [x] P2 Realism pass: make quotes sound like real GT students (Reddit/X voice), sources point at plausible public URLs (course pages, r/gatech threads).
+- [x] P1 6 additional seeds for star map + roast: CS 2340, CS 2200, CS 4641, MATH 2551, ECE 2020, CHEM 1310.
+- [x] P1 `lib/data/roast.ts`: `mockRoast(packs)` and `mockVersus(a,b)` matching ai-tools types with 2-3 witty lines per course.
+- [x] P1 `lib/data/boardFallback.ts`: realistic static BoardStats for fallback when GitHub API is unreachable.
