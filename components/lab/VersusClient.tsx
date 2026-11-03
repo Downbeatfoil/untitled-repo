@@ -77,6 +77,7 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>("announce");
   const [finished, setFinished] = useState(false);
+  const [autoGo, setAutoGo] = useState<string[] | null>(null);
   const stage = useRef<HTMLDivElement>(null);
 
   // Deep link: /versus?a=CS%201332&b=CS%202110 prefills both fighters.
@@ -85,17 +86,20 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
     const ca = normalizeCourseCode(q.get("a") ?? ""), cb = normalizeCourseCode(q.get("b") ?? "");
     if (CODE_RE.test(ca)) setA(ca);
     if (CODE_RE.test(cb)) setB(cb);
+    if (q.get("go") === "1" && CODE_RE.test(ca) && CODE_RE.test(cb) && ca !== cb) setAutoGo([ca, cb]);
   }, []);
+  useEffect(() => { if (autoGo) { void fight(autoGo[0], autoGo[1]); setAutoGo(null); } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGo]);
 
   const same = a === b && !!a;
   const ready = !!a && !!b && !same;
 
-  async function fight() {
-    if (!ready) return;
+  async function fight(fa: string = a, fb: string = b) {
+    if (!fa || !fb || fa === fb) return;
     setLoading(true); setErr(null); setRes(null); setFinished(false);
     try {
       const t0 = Date.now();
-      const r = await postVersus(a, b);
+      const r = await postVersus(fa, fb);
       await new Promise((x) => setTimeout(x, Math.max(0, 900 - (Date.now() - t0))));
       setRes(r); setIdx(0); setPhase("announce");
       setTimeout(() => stage.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
@@ -147,7 +151,7 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
           <Picker label="Fighter 2" side="b" value={b} onChange={setB} courses={courses} other={a} />
         </div>
         {(err || same) && <p role="alert" className="mt-3 rounded-lg border border-[#ff5d6c]/40 bg-[#ff5d6c]/10 px-3 py-2 text-sm text-[#ff9aa4]">{err ?? "A course can't fight itself. Pick two different fighters."}</p>}
-        <button type="button" onClick={fight} disabled={!ready || loading} className="btn btn-gold lab-btn-big mt-4 w-full !py-4 text-lg font-black tracking-wide">
+        <button type="button" onClick={() => fight()} disabled={!ready || loading} className="btn btn-gold lab-btn-big mt-4 w-full !py-4 text-lg font-black tracking-wide">
           {loading ? <span className="inline-flex items-center gap-3">Taping up the cage<span className="lab-dots"><span /><span /><span /></span></span> : ready ? `🥊 FIGHT: ${a} vs ${b}` : "Pick two fighters"}
         </button>
       </section>

@@ -28,13 +28,16 @@ export default function RoastClient({ courses }: { courses: CourseSummary[] }) {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<RoastResult | null>(null);
+  const [autoGo, setAutoGo] = useState<string[] | null>(null);
   const resRef = useRef<HTMLDivElement>(null);
   // Deep link: /roast?c=CS%201332,MATH%201554 prefills the schedule.
   useEffect(() => {
     const raw = new URLSearchParams(window.location.search).getAll("c").flatMap((v) => v.split(","));
     const codes = [...new Set(raw.map(normalizeCourseCode).filter((c) => CODE_RE.test(c)))].slice(0, MAX);
-    if (codes.length) setPicked(codes);
+    if (codes.length) { setPicked(codes); if (new URLSearchParams(window.location.search).get("go") === "1") setAutoGo([...codes]); }
   }, []);
+  useEffect(() => { if (autoGo) { void roast(autoGo); setAutoGo(null); } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGo]);
   const byCode = useMemo(() => new Map(courses.map((c) => [c.code, c])), [courses]);
 
   const add = (raw: string) => {
@@ -54,12 +57,12 @@ export default function RoastClient({ courses }: { courses: CourseSummary[] }) {
     setPicked(pick); setErr(null);
   };
 
-  async function roast() {
-    if (picked.length < MIN) return;
+  async function roast(list: string[] = picked) {
+    if (list.length < 1 || (list === picked && list.length < MIN)) return;
     setLoading(true); setErr(null); setResult(null);
     const t0 = Date.now();
     try {
-      const r = await postRoast(picked);
+      const r = await postRoast(list);
       const wait = Math.max(0, 1500 - (Date.now() - t0)); // let the "Grok is cooking" beat land
       await new Promise((res) => setTimeout(res, wait));
       setResult(r);
@@ -121,7 +124,7 @@ export default function RoastClient({ courses }: { courses: CourseSummary[] }) {
         </form>
         {err && <p role="alert" className="mt-3 rounded-lg border border-[#ff5d6c]/40 bg-[#ff5d6c]/10 px-3 py-2 text-sm text-[#ff9aa4]">{err}</p>}
 
-        <button type="button" onClick={roast} disabled={!ready || loading}
+        <button type="button" onClick={() => roast()} disabled={!ready || loading}
           className="btn btn-gold lab-btn-big mt-5 w-full !py-4 text-lg font-black tracking-wide">
           {loading ? <span className="inline-flex items-center gap-3">Grok is heating the grill<span className="lab-dots"><span /><span /><span /></span></span>
             : ready ? "🔥 Roast my schedule" : `Pick ${need} more course${need > 1 ? "s" : ""} to roast`}
