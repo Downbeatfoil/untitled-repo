@@ -38,6 +38,31 @@ export async function POST(req: Request) {
 
   try {
     const exam = await generateExam(pack, count ?? 6, conceptIds);
+
+    // Sanitize MCQ questions to ensure 4 strictly unique choices
+    for (const q of exam.questions) {
+      if (q.type === "mcq" && q.choices) {
+        const seen = new Set<string>();
+        const unique: string[] = [];
+        for (const c of q.choices) {
+          if (!seen.has(c)) {
+            seen.add(c);
+            unique.push(c);
+          }
+        }
+        let alt = 1;
+        while (unique.length < 4) {
+          const candidate = `${alt}`;
+          if (!seen.has(candidate) && candidate !== q.answer) {
+            seen.add(candidate);
+            unique.push(candidate);
+          }
+          alt++;
+        }
+        q.choices = unique;
+      }
+    }
+
     const headers: Record<string, string> = {};
     if (exam.mocked || isMocked) headers["x-mocked"] = "1";
     return NextResponse.json<PracticeExam>(exam, { headers });

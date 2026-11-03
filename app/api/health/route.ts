@@ -6,13 +6,18 @@ import { grokConfigured } from "@/lib/ai/grok";
 export const dynamic = "force-dynamic";
 
 export function GET() {
-  const configured = grokConfigured();
+  const hasXai = grokConfigured();
+  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
+  const provider: HealthResponse["provider"] = hasXai ? "grok" : hasGemini ? "gemini" : "none";
+  const isConfigured = provider !== "none";
+
   const headers: Record<string, string> = {};
-  if (!configured) {
+  if (!isConfigured) {
     headers["x-mocked"] = "1";
   }
+
   return NextResponse.json<HealthResponse>(
-    { ok: true, grokConfigured: configured },
+    { ok: true, grokConfigured: isConfigured, provider },
     { headers }
   );
 }
