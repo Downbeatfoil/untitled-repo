@@ -86,7 +86,9 @@ export default function VersusClient({ courses }: { courses: CourseSummary[] }) 
     const ca = normalizeCourseCode(q.get("a") ?? ""), cb = normalizeCourseCode(q.get("b") ?? "");
     if (CODE_RE.test(ca)) setA(ca);
     if (CODE_RE.test(cb)) setB(cb);
+    else if (CODE_RE.test(ca)) setB((cur) => (cur === ca ? courses.find((c) => c.code !== ca)?.code ?? cur : cur));
     if (q.get("go") === "1" && CODE_RE.test(ca) && CODE_RE.test(cb) && ca !== cb) setAutoGo([ca, cb]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => { if (autoGo) { void fight(autoGo[0], autoGo[1]); setAutoGo(null); } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoGo]);
