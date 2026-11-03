@@ -8,7 +8,7 @@ import OpenAI from "openai";
 export type Provider = "grok" | "gemini" | "none";
 
 const DEFAULT_GROK_MODEL = process.env.GROK_MODEL || "grok-4";
-const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
 
 let grokClient: OpenAI | null = null;
 let geminiClient: OpenAI | null = null;
