@@ -4,7 +4,7 @@
  */
 import type {
   AiRequest, AiResponse, ApiError, BoardStats, ChatRequest, ChatResponse, CoursePack, CourseSummary,
-  ExamRequest, GradeRequest, GradeResponse, OutreachDraft, OutreachRequest, PlanRequest, PracticeExam,
+  ExamRequest, GradeRequest, HealthResponse, GradeResponse, OutreachDraft, OutreachRequest, PlanRequest, PracticeExam,
   ScoutEvent, ScoutRequest, StudyPlan,
 } from "@/shared/contract";
 import { courseSlug } from "@/shared/contract";
@@ -22,6 +22,7 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 }
 const post = <T>(path: string, body: unknown) => call<T>(path, { method: "POST", body: JSON.stringify(body) });
 
+export const getHealth = () => call<HealthResponse>("/api/health");
 export const getCourses = () => call<CourseSummary[]>("/api/courses");
 export const getPack = (code: string) => call<CoursePack>(`/api/packs/${courseSlug(code)}`);
 export const postExam = (req: ExamRequest) => post<PracticeExam>("/api/exam", req);
