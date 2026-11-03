@@ -1,11 +1,11 @@
 # api lane — `app/api/`  (thin routes: validate with zod, call lib/ai + lib/data, return contract shapes)
-- [ ] P0 `POST /api/scout` → SSE (`text/event-stream`, `data: <json>\n\n`) streaming `runScout` from lib/ai (until ai lane delivers, stream `replayScout(getSeedPack)` from lib/data). Set `export const dynamic = "force-dynamic"`, `runtime = "nodejs"`, `maxDuration = 60`. Cache the final pack via lib/data cache.
+- [x] P0 `POST /api/scout` → SSE (`text/event-stream`, `data: <json>\n\n`) streaming `runScout` from lib/ai (until ai lane delivers, stream `replayScout(getSeedPack)` from lib/data). Set `export const dynamic = "force-dynamic"`, `runtime = "nodejs"`, `maxDuration = 60`. Cache the final pack via lib/data cache.
 - [x] P0 `GET /api/courses` → `CourseSummary[]` (seeds + cached live packs).
 - [x] P0 `GET /api/packs/[code]` → `CoursePack` (cache → seed → generic; slug "cs-1332" or code).
-- [ ] P0 `POST /api/exam` and `POST /api/exam/grade`.
-- [ ] P1 `POST /api/plan`, `POST /api/outreach`, `POST /api/chat`.
-- [ ] P1 `GET /api/export/[code]?format=smartpath|ics` using lib/export (Content-Disposition attachment; ics needs examDate & hoursPerDay).
-- [ ] P1 `GET /api/board-stats` → `BoardStats`: fetch `https://api.github.com/repos/Downbeatfoil/untitled-repo/issues/1/comments?per_page=100` (+ page 2..) and `/commits?per_page=100`; parse `**[lane] TYPE** — msg`; cache 30 s; fallback to static numbers on error.
-- [ ] P1 Every route: zod validation → 400 `ApiError`; try/catch → mock fallback (never 500 on the demo path).
-- [ ] P2 `GET /api/health` reports `grokConfigured`; add `x-mocked: 1` header when serving fallbacks.
+- [x] P0 `POST /api/exam` and `POST /api/exam/grade`.
+- [x] P1 `POST /api/plan`, `POST /api/outreach`, `POST /api/chat`.
+- [x] P1 `GET /api/export/[code]?format=smartpath|ics` using lib/export (Content-Disposition attachment; ics needs examDate & hoursPerDay).
+- [x] P1 `GET /api/board-stats` → `BoardStats`: fetch `https://api.github.com/repos/Downbeatfoil/untitled-repo/issues/1/comments?per_page=100` (+ page 2..) and `/commits?per_page=100`; parse `**[lane] TYPE** — msg`; cache 30 s; fallback to static numbers on error.
+- [x] P1 Every route: zod validation → 400 `ApiError`; try/catch → mock fallback (never 500 on the demo path).
+- [x] P2 `GET /api/health` reports `grokConfigured`; add `x-mocked: 1` header when serving fallbacks.
 - [ ] P2 Respond to every qa-api BUG addressed to api within one ship.
