@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { ApiError, OutreachDraft } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
 import { findPack } from "@/app/api/_cache";
+import { draftOutreach } from "@/lib/ai-tools";
 import { mockOutreach } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
     return NextResponse.json<ApiError>({ error: msg || "Invalid OutreachRequest" }, { status: 400 });
   }
 
-  const { courseCode, professorName, studentName } = parsed.data;
+  const { courseCode, professorName, studentName, tone } = parsed.data;
   const normalized = normalizeCourseCode(courseCode);
   const { pack, isMocked } = findPack(normalized);
 
@@ -38,12 +39,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    const draft = mockOutreach(pack, professorName, studentName);
+    const draft = await draftOutreach(pack, professorName, studentName, tone);
     const headers: Record<string, string> = {};
     if (draft.mocked || isMocked) headers["x-mocked"] = "1";
     return NextResponse.json<OutreachDraft>(draft, { headers });
   } catch (err) {
-    console.error("[api/outreach] error:", err);
-    return NextResponse.json<ApiError>({ error: "Failed to generate outreach draft" }, { status: 500 });
+    console.error("[api/outreach] draftOutreach error, falling back:", err);
+    try {
+      const fallback = mockOutreach(pack, professorName, studentName);
+      return NextResponse.json<OutreachDraft>(fallback, { headers: { "x-mocked": "1" } });
+    } catch {
+      return NextResponse.json<ApiError>({ error: "Failed to generate outreach draft" }, { status: 500 });
+    }
   }
 }

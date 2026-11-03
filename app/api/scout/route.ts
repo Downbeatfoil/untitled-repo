@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { ApiError, CoursePack, ScoutEvent } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
 import { cachePack, findPack } from "@/app/api/_cache";
+import { runScout } from "@/lib/ai/scout";
 import { replayScout } from "@/lib/data/scoutReplay";
 import { makeGenericPack } from "@/lib/data/genericPack";
 
@@ -33,27 +34,26 @@ export async function POST(req: Request) {
   const { courseCode, fresh } = parsed.data;
   const normalized = normalizeCourseCode(courseCode);
 
-  let packToReplay: CoursePack | null = null;
-  if (!fresh) {
-    const found = findPack(normalized);
-    packToReplay = found.pack;
-  }
-  if (!packToReplay) {
-    try {
-      packToReplay = makeGenericPack(normalized);
-    } catch {
-      const found = findPack("CS 1332");
-      packToReplay = found.pack;
+  let scoutStream: AsyncIterable<ScoutEvent>;
+  try {
+    scoutStream = runScout(normalized);
+  } catch (err) {
+    console.warn("[api/scout] runScout failed to start, falling back to replay:", err);
+    let pack: CoursePack | null = null;
+    if (!fresh) {
+      pack = findPack(normalized).pack;
     }
+    if (!pack) {
+      try {
+        pack = makeGenericPack(normalized);
+      } catch {
+        pack = findPack("CS 1332").pack;
+      }
+    }
+    scoutStream = pack ? replayScout(pack) : replayScout(findPack("CS 1332").pack!);
   }
 
-  if (!packToReplay) {
-    return NextResponse.json<ApiError>({ error: `Could not build scout replay for ${courseCode}` }, { status: 500 });
-  }
-
-  const scoutStream = replayScout(packToReplay);
   const encoder = new TextEncoder();
-
   const stream = new ReadableStream({
     async start(controller) {
       try {

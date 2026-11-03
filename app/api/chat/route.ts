@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { ApiError, ChatResponse } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
 import { findPack } from "@/app/api/_cache";
+import { courseChat } from "@/lib/ai-tools";
 import { mockChat } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -40,16 +41,19 @@ export async function POST(req: Request) {
     return NextResponse.json<ApiError>({ error: `Course pack not found for '${courseCode}'` }, { status: 404 });
   }
 
-  // Find the most recent user prompt
-  const lastUserPrompt = [...messages].reverse().find((m) => m.role === "user")?.content || "Explain this course";
-
   try {
-    const chatRes = mockChat(pack, lastUserPrompt);
+    const chatRes = await courseChat(pack, messages);
     const headers: Record<string, string> = {};
     if (chatRes.mocked || isMocked) headers["x-mocked"] = "1";
     return NextResponse.json<ChatResponse>(chatRes, { headers });
   } catch (err) {
-    console.error("[api/chat] error:", err);
-    return NextResponse.json<ApiError>({ error: "Failed to generate chat response" }, { status: 500 });
+    console.error("[api/chat] courseChat error, falling back:", err);
+    try {
+      const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content || "Explain this course";
+      const fallback = mockChat(pack, lastUserMsg);
+      return NextResponse.json<ChatResponse>(fallback, { headers: { "x-mocked": "1" } });
+    } catch {
+      return NextResponse.json<ApiError>({ error: "Failed to generate chat response" }, { status: 500 });
+    }
   }
 }

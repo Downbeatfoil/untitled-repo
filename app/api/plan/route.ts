@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { ApiError, StudyPlan } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
 import { findPack } from "@/app/api/_cache";
+import { generatePlan } from "@/lib/ai-tools";
 import { mockPlan } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
@@ -37,12 +38,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    const plan = mockPlan(pack, examDate, hoursPerDay);
+    const plan = await generatePlan(pack, examDate, hoursPerDay);
     const headers: Record<string, string> = {};
     if (plan.mocked || isMocked) headers["x-mocked"] = "1";
     return NextResponse.json<StudyPlan>(plan, { headers });
   } catch (err) {
-    console.error("[api/plan] error:", err);
-    return NextResponse.json<ApiError>({ error: "Failed to create study plan" }, { status: 500 });
+    console.error("[api/plan] generatePlan error, falling back:", err);
+    try {
+      const fallback = mockPlan(pack, examDate, hoursPerDay);
+      return NextResponse.json<StudyPlan>(fallback, { headers: { "x-mocked": "1" } });
+    } catch {
+      return NextResponse.json<ApiError>({ error: "Failed to create study plan" }, { status: 500 });
+    }
   }
 }
