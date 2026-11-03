@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { CoursePack } from "@/shared/contract";
 import { normalizeCourseCode } from "@/shared/contract";
 import { ConceptGraph, DifficultyHeatmap, ExamTopicsChart, FearGauge, LearningPath, SourceKindDonut } from "@/components/viz";
-import GrokStatusPill from "@/components/core/GrokStatusPill";
+import ProviderPill from "../../_components/ProviderPill";
 import ShareCard from "@/components/core/ShareCard";
 import CourseChat from "@/components/core/CourseChat";
 import ExportButton from "@/components/core/ExportButton";
@@ -66,7 +66,7 @@ export default function CoursePage() {
         <div className="grid-bg pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-3xl">
-            <div className="flex items-center gap-2"><span className="eyebrow">Georgia Tech</span><GrokStatusPill pack={pack} /></div>
+            <div className="flex items-center gap-2"><span className="eyebrow">Georgia Tech</span><ProviderPill pack={pack} /></div>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl"><span className="mono text-gradient">{pack.course.code}</span></h1>
             <div className="mt-1 text-xl font-semibold text-foreground sm:text-2xl">{pack.course.title}</div>
             <p className="mt-3 text-[15px] leading-relaxed text-muted">{pack.summary}</p>

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getBoardStats } from "@/lib/api-client";
 import type { BoardStats } from "@/shared/contract";
-import { BoardActivityChart } from "@/components/viz";
+import { AnimatedNumber, BoardActivityChart } from "@/components/viz";
 import { Skeleton } from "../_components/ui";
 
 const LANE_META: Record<string, { color: string; who: string }> = {
@@ -54,7 +54,7 @@ export default function BuiltByAgents() {
           <div key={String(l)} className="card relative overflow-hidden p-6">
             <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full opacity-20 blur-2xl" style={{ background: String(c) }} />
             <div className="eyebrow !text-dim">{l}</div>
-            {stats ? <div className="mt-2 text-5xl font-extrabold tabular-nums" style={{ color: String(c) }}>{String(v ?? 0)}</div> : <Skeleton className="mt-3 h-12 w-24" />}
+            {stats ? <div className="mt-2 text-5xl font-extrabold tabular-nums" style={{ color: String(c) }}><AnimatedNumber value={Number(v ?? 0)} /></div> : <Skeleton className="mt-3 h-12 w-24" />}
           </div>
         ))}
       </div>

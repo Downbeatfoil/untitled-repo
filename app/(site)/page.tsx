@@ -13,7 +13,7 @@ import { loadCourses } from "./_lib/data";
 
 const STEPS = [
   { n: "01", icon: "🔎", title: "Name your class", body: "Type any Georgia Tech course code. No uploads, no accounts." },
-  { n: "02", icon: "🛰️", title: "4 Grok agents scout", body: "Exam Hunter, Syllabus Scout, Student Pulse and Concept Mapper search the web and X in parallel." },
+  { n: "02", icon: "🛰️", title: "4 AI agents scout", body: "Exam Hunter, Syllabus Scout, Student Pulse and Concept Mapper search the web and X in parallel." },
   { n: "03", icon: "🧭", title: "Get your SmartPath", body: "Concept graph, practice exam, study plan, professor outreach, exported to SmartPath." },
 ];
 
@@ -42,13 +42,13 @@ export default function Home() {
         <div className="relative mx-auto max-w-4xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pt-24">
           <div className="anim-up inline-flex items-center gap-2 rounded-full border border-line2 bg-[rgba(255,255,255,0.03)] px-3 py-1.5 text-xs text-muted">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-good" />
-            4 Grok agents online · web + X search · every source cited
+            4 AI agents online · web + X search · every source cited
           </div>
           <h1 className="anim-up delay-1 mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
             What class are you <span className="text-gradient">dreading?</span>
           </h1>
           <p className="anim-up delay-2 mx-auto mt-5 max-w-2xl text-base text-muted sm:text-lg">
-            Name any Georgia Tech course. A swarm of Grok agents scours the web and X for public past exams, syllabi and
+            Name any Georgia Tech course. A swarm of AI agents scours the web and X for public past exams, syllabi and
             student chatter, then builds your SmartPath study path in about 60 seconds.
           </p>
 

@@ -8,11 +8,11 @@ import Button from "@/components/core/Button";
 import Fx from "@/components/core/Fx";
 import LogTicker, { type LogLine } from "@/components/core/LogTicker";
 import SourceFeed from "@/components/core/SourceFeed";
-import { AgentSwarmViz, SourceTimeline } from "@/components/viz";
+import { AgentSwarmViz, PackReadyBurst, SourceTimeline } from "@/components/viz";
 import { startScout } from "@/lib/api-client";
-import type { AgentName, AgentStatus, ScoutEvent, Source } from "@/shared/contract";
+import { getSeedPack, makeGenericPack, replayScout } from "@/lib/data";
+import type { AgentName, AgentStatus, CoursePack, ScoutEvent, Source } from "@/shared/contract";
 import { AGENTS, normalizeCourseCode } from "@/shared/contract";
-import { buildSeedPack } from "../../_lib/seed";
 
 type AgentState = Record<AgentName, { status: AgentStatus; message: string }>;
 const initial = (): AgentState =>
@@ -26,24 +26,47 @@ export default function ScoutPage() {
   const [logs, setLogs] = useState<LogLine[]>([]);
   const [sources, setSources] = useState<Source[]>([]);
   const [ready, setReady] = useState(false);
+  const [pack, setPack] = useState<CoursePack | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [run, setRun] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const hasSeed = !!buildSeedPack(code);
 
   useEffect(() => {
-    setAgents(initial()); setLogs([]); setSources([]); setReady(false); setError(null); setElapsed(0);
-    const abort = startScout({ courseCode: code }, (e: ScoutEvent) => {
+    setAgents(initial()); setLogs([]); setSources([]); setReady(false); setPack(null); setError(null); setElapsed(0);
+    let cancelled = false;
+    let abortLive: (() => void) | null = null;
+    let replaying = false;
+    const handle = (e: ScoutEvent) => {
+      if (cancelled) return;
       switch (e.type) {
         case "agent": setAgents((p) => ({ ...p, [e.agent]: { status: e.status, message: e.message || p[e.agent].message } })); break;
         case "source": setSources((p) => (p.some((s) => s.id === e.source.id) ? p : [...p, e.source])); break;
         case "log": setLogs((p) => [...p, { agent: e.agent, message: e.message }].slice(-50)); break;
-        case "pack": setReady(true); setAgents((p) => Object.fromEntries(Object.entries(p).map(([k, v]) => [k, { ...v, status: "done" }])) as AgentState); break;
+        case "pack": setPack(e.pack); setReady(true); setAgents((p) => Object.fromEntries(Object.entries(p).map(([k, v]) => [k, { ...v, status: "done" }])) as AgentState); break;
         case "done": setReady(true); break;
-        case "error": setError(e.message); break;
+        case "error": void fallback(e.message); break;
       }
-    });
-    return abort;
+    };
+    // Demo safety: never surface a raw API error. Replay a seeded (or generic) pack through the same UI.
+    const fallback = async (reason: string) => {
+      if (replaying || cancelled) return;
+      replaying = true;
+      abortLive?.();
+      setAgents(initial()); setLogs([]); setSources([]);
+      const pk = getSeedPack(code) ?? makeGenericPack(code);
+      void reason;
+      try {
+        for await (const ev of replayScout(pk)) {
+          if (cancelled) return;
+          handle(ev);
+        }
+        if (!cancelled) handle({ type: "pack", pack: pk });
+      } catch {
+        if (!cancelled) setError("Live scouting is unavailable.");
+      }
+    };
+    abortLive = startScout({ courseCode: code }, handle);
+    return () => { cancelled = true; abortLive?.(); };
   }, [code, run]);
 
   useEffect(() => {
@@ -52,18 +75,12 @@ export default function ScoutPage() {
     return () => clearInterval(id);
   }, [error, ready, run]);
 
+  // No pack event (stream just ended): fall back to a plain timed redirect. With a pack, PackReadyBurst navigates.
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || pack) return;
     const t = setTimeout(() => router.push(`/course/${slug}`), 1500);
     return () => clearTimeout(t);
-  }, [ready, router, slug]);
-
-  // Demo safety: live scouting unavailable + seeded pack exists → go there automatically.
-  useEffect(() => {
-    if (!error || !hasSeed) return;
-    const t = setTimeout(() => router.push(`/course/${slug}`), 2500);
-    return () => clearTimeout(t);
-  }, [error, hasSeed, router, slug]);
+  }, [ready, pack, router, slug]);
 
   const doneCount = AGENTS.filter((a) => agents[a.name].status === "done").length;
   const progress = ready ? 100 : Math.min(96, Math.round((doneCount / AGENTS.length) * 70 + Math.min(sources.length, 12) * 2.2));
@@ -72,6 +89,7 @@ export default function ScoutPage() {
   return (
     <main className="page-enter mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <Fx />
+      {pack && <PackReadyBurst pack={pack} onDone={() => router.push(`/course/${slug}`)} />}
       <Link href="/" className="text-sm text-muted hover:text-goldb">← All courses</Link>
 
       {/* hero */}
@@ -81,7 +99,7 @@ export default function ScoutPage() {
           <div>
             <div className="eyebrow flex items-center gap-2"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-good" />Live scout run</div>
             <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-6xl">Scouting <span className="mono text-gradient">{code}</span></h1>
-            <p className="mt-3 max-w-xl text-base text-muted sm:text-lg">Four Grok agents are searching the web and X in parallel. Every source they find is public and cited.</p>
+            <p className="mt-3 max-w-xl text-base text-muted sm:text-lg">Four AI agents are searching the web and X in parallel. Every source they find is public and cited.</p>
             <div className="mono mt-6 flex flex-wrap gap-x-8 gap-y-2 text-sm text-muted">
               <span>T+{String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}</span>
               <span><b className="text-goldb">{sources.length}</b> sources</span>
@@ -97,11 +115,11 @@ export default function ScoutPage() {
 
       {error && (
         <div role="alert" className="card mt-6 flex flex-wrap items-center gap-3 border-[rgba(255,93,108,0.35)] p-4 text-sm">
-          <span className="text-bad">Scout hit a snag: {error}</span>
-          <span className="text-muted">{hasSeed ? "Opening the seeded pack…" : "No seeded pack for this course."}</span>
+          <span className="text-bad">{error}</span>
+          <span className="text-muted">You can still open the course pack.</span>
           <div className="ml-auto flex gap-2">
             <Button size="sm" variant="outline" onClick={() => setRun((r) => r + 1)}>Retry</Button>
-            {hasSeed ? <Link href={`/course/${slug}`} className="btn btn-gold">Open seeded pack</Link> : <Link href="/" className="btn btn-ghost">Pick a course</Link>}
+            <Link href={`/course/${slug}`} className="btn btn-gold">Open course pack</Link>
           </div>
         </div>
       )}

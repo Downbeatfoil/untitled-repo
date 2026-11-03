@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="mt-24 border-t border-line">
       <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-4 py-8 text-sm text-dim sm:flex-row sm:items-center sm:px-6">
         <div>
-          Built with <span className="text-goldb">Grok</span> · BDBI <span className="text-muted">SmartPath AI</span>
+          Built by <span className="text-goldb">AI agents</span> · BDBI <span className="text-muted">SmartPath AI</span>
         </div>
         <div className="flex items-center gap-5">
           <Link href="/built-by-agents" className="hover:text-foreground">Built by 12 agents</Link>
