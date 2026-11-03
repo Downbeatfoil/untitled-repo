@@ -5,7 +5,7 @@ Compose components from `components/core` + `components/viz`. Until they exist, 
 - [x] P0 `/scout/[slug]`: uses `startScout`; layout = 4 AgentCards (top), live LogTicker, SourceFeed (right), progress bar; on `pack` event show "Course pack ready" then `router.push('/course/[slug]')` after 1.5 s. Handle error → retry button + "open seeded pack".
 - [x] P0 `/course/[slug]`: header (code, title, FearGauge, summary, Export to SmartPath + Re-scout buttons), tabs: Overview (ConceptGraph, ExamTopicsChart, DifficultyHeatmap, quotes, tips, sources) · Practice Exam · Study Plan · Professor Outreach · Ask the Course.
 - [x] P1 `/built-by-agents`: `getBoardStats()` → big numbers (posts, commits, lanes), per-lane bars, recent activity feed, auto-refresh 15 s. Explain the swarm system in 3 lines.
-- [ ] P1 Loading skeletons + error states on every page; `not-found.tsx`.
-- [ ] P1 Mobile layout pass (judges may look on phones): stack columns, 16px gutters.
-- [ ] P2 Page transitions/micro-animations (CSS only), favicon + OG image in `public/`.
-- [ ] P2 `/about`: problem → solution → social good → how Grok is used (judging-criteria aligned copy).
+- [x] P1 Loading skeletons + error states on every page; `not-found.tsx`.
+- [x] P1 Mobile layout pass (judges may look on phones): stack columns, 16px gutters.
+- [x] P2 Page transitions/micro-animations (CSS only), favicon + OG image in `public/`.
+- [x] P2 `/about`: problem → solution → social good → how Grok is used (judging-criteria aligned copy).

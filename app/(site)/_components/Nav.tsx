@@ -35,7 +35,7 @@ export default function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo />
-          <span className="text-[15px] font-bold tracking-tight">
+          <span className="whitespace-nowrap text-[15px] font-bold tracking-tight">
             SmartPath <span className="text-gradient">Scout</span>
           </span>
           <span className="badge hidden border-line2 text-dim sm:inline-flex">beta</span>
@@ -47,11 +47,11 @@ export default function Nav() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                className={`whitespace-nowrap rounded-lg px-2.5 py-2 text-[13px] font-medium sm:px-3 sm:text-sm transition-colors ${
                   active ? "bg-[rgba(179,163,105,0.12)] text-goldb" : "text-muted hover:text-foreground"
                 } ${["/about", "/roast", "/versus", "/wall"].includes(l.href) ? "hidden md:block" : ""}`}
               >
-                {l.label}
+                {l.label === "Built by Agents" ? <><span className="sm:hidden">Agents</span><span className="hidden sm:inline">Built by Agents</span></> : l.label}
               </Link>
             );
           })}

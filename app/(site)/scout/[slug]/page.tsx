@@ -2,7 +2,7 @@
 /** Lane: pages. Scout run, composed from components/core ScoutProgress (startScout under the hood). */
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ScoutProgress from "@/components/core/ScoutProgress";
 import { normalizeCourseCode } from "@/shared/contract";
 import { buildSeedPack } from "../../_lib/seed";
@@ -14,6 +14,13 @@ export default function ScoutPage() {
   const [failed, setFailed] = useState<string | null>(null);
   const hasSeed = !!buildSeedPack(code);
 
+  // Demo safety: if live scouting is unavailable and we have a seeded pack, go there automatically.
+  useEffect(() => {
+    if (!failed || !hasSeed) return;
+    const t = setTimeout(() => router.push(`/course/${slug}`), 2500);
+    return () => clearTimeout(t);
+  }, [failed, hasSeed, router, slug]);
+
   return (
     <main className="page-enter mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <Link href="/" className="mb-5 inline-block text-sm text-muted hover:text-goldb">← All courses</Link>
@@ -24,7 +31,7 @@ export default function ScoutPage() {
       />
       {failed && (
         <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-line bg-[rgba(255,255,255,0.03)] p-4 text-sm text-muted">
-          <span>Live scouting isn&apos;t available right now.</span>
+          <span>Live scouting isn&apos;t available right now.{hasSeed ? " Opening the seeded pack…" : ""}</span>
           {hasSeed ? (
             <Link href={`/course/${slug}`} className="btn btn-gold">Open seeded pack for {code}</Link>
           ) : (
